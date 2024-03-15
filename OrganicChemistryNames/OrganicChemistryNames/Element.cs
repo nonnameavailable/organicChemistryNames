@@ -23,6 +23,7 @@ namespace OrganicChemistryNames
 
         public static Color gridColor = Color.FromArgb(220, 220, 220);
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I" };
+        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1};
         public static Color[] fontColorMap = new Color[] { Color.White, Color.Black, Color.Black, Color.Black, Color.Black, Color.Black, Color.Blue, Color.Blue, Color.Blue, Color.Blue };
         public static Color[] backgroundColorMap = new Color[] { Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White };
 

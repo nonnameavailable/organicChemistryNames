@@ -58,14 +58,23 @@ namespace OrganicChemistryNames
             MouseEventArgs me = (MouseEventArgs)e;
             int x = me.X / grid.SqSize;
             int y = me.Y / grid.SqSize;
-            if (me.Button == MouseButtons.Left)
+            try
             {
-                grid.addElement(x, y, paintingType());
+                if (me.Button == MouseButtons.Left)
+                {
+                    grid.addElement(x, y, paintingType());
 
-            } else if(me.Button == MouseButtons.Right)
-            {
-                grid.addElement(x, y, 0);
+                }
+                else if (me.Button == MouseButtons.Right)
+                {
+                    grid.addElement(x, y, 0);
+                }
             }
+            catch (IndexOutOfRangeException)
+            {
+                //do nothing
+            }
+            
 
             
             mainPictureBox.Image = grid.renderedGrid();
