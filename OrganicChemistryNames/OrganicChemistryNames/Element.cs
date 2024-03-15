@@ -38,8 +38,16 @@ namespace OrganicChemistryNames
             this.y = y;
         }
 
-        public void draw(Graphics g, int sqSize)
+        public int Type { get => type; set => type = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
+
+        public void draw(Graphics g, int sqSize, bool isRotated)
         {
+            Bitmap miniImage = new Bitmap(sqSize, sqSize);
+            Graphics mg = Graphics.FromImage(miniImage);
+            if (isRotated) mg.RotateTransform(90);
+
             Color textColor = fontColorMap[type];
             Color backgroundColor = backgroundColorMap[type];
             string txt = characterMap[type];
@@ -48,9 +56,18 @@ namespace OrganicChemistryNames
             int xc = x * sqSize;
             int yc = y * sqSize;
 
-            g.FillRectangle(new SolidBrush(backgroundColor), xc, yc, sqSize, sqSize);
-            g.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), xc, yc, sqSize, sqSize);
-            g.DrawString(txt, textFont, new SolidBrush(textColor), xc, yc);
+            int ox = 0;
+            int oy = isRotated ? -sqSize : 0;
+
+            
+
+            mg.FillRectangle(new SolidBrush(backgroundColor), ox, oy, sqSize, sqSize);
+            mg.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), ox, oy, sqSize, sqSize);
+            mg.DrawString(txt, textFont, new SolidBrush(textColor), ox, oy);
+            
+            mg.Dispose();
+            g.DrawImage(miniImage, xc, yc);
+            miniImage.Dispose();
         }
     }
 }

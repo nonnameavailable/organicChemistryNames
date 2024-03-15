@@ -29,6 +29,7 @@ namespace OrganicChemistryNames
                 ElementButton eb = new ElementButton(i);
                 eb.Width = buttonSize;
                 eb.Height = buttonSize;
+                if (i == Element.C) eb.IsPainting = true;
                 elementFLP.Controls.Add(eb);
             }
 
