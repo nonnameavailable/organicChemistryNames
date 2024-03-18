@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace OrganicChemistryNames
 {
@@ -18,7 +19,7 @@ namespace OrganicChemistryNames
         public int SqSize { get => sqSize; }
         public int Width { get => width; }
         public int Height { get => height; }
-
+        public int[][] Grid { get => grid; }
 
         public ChemistryGrid(int width, int height, int sqSize)
         {
@@ -63,6 +64,14 @@ namespace OrganicChemistryNames
                 bool isVerticalBond = e.Type <= 3 && grid[e.Y][e.X + 1] == 0;
                 e.draw(g, SqSize, isVerticalBond);
             }
+
+            //NAMER TESTING
+            List<Element> longestCarbonChain = MoleculeNamer.longestCarbonChain(grid);
+            foreach(Element e in longestCarbonChain)
+            {
+                e.draw(g, SqSize, false, Color.Green);
+            }
+            //END OF NAMER TESTING
             return result;
         }
 
@@ -89,7 +98,7 @@ namespace OrganicChemistryNames
                 return;
             }
 
-            if ((elementOnBond || bondOnEmpty || hasNoNeighbors || hasMultipleNeighbors) && !emptyGrid && !changingElements) return;
+            if ((elementOnBond || bondOnEmpty || hasNoNeighbors || hasMultipleNeighbors) && !emptyGrid && !changingElements && !changingBonds) return;
 
             if (changingBonds || changingElements || emptyGrid)
             {
@@ -182,7 +191,13 @@ namespace OrganicChemistryNames
                         bondCount += grid[j][i + 1];
                         bondCount += grid[j + 1][i];
                         bondCount += grid[j][i - 1];
-                        if (bondCount > Element.maxBondMap[type]) return false;
+                        //MessageBox.Show("bondcount: " + bondCount + Environment.NewLine + "maxbonds: " + Element.maxBondMap[type] + Environment.NewLine + "type: " + type);
+                        if (bondCount > Element.maxBondMap[type])
+                        {
+                            MessageBox.Show("quitting");
+                            return false;
+
+                        }
                     }
                 }
             }

@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChemistryGrid.cs" />
+    <Compile Include="Crawler.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="ElementButton.cs">
       <SubType>UserControl</SubType>
@@ -61,6 +62,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IP.cs" />
+    <Compile Include="MoleculeNamer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ElementButton.resx">

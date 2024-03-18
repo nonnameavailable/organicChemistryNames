@@ -35,24 +35,6 @@ namespace OrganicChemistryNames
 
         }
 
-        public int[] DispImgDims
-        {
-            get
-            {
-                double ratio = (double)canvas.Width / (double)mainPictureBox.Width;
-                if ((double)canvas.Height / ratio > mainPictureBox.Height)
-                {
-                    ratio = (double)canvas.Height / (double)mainPictureBox.Height;
-                }
-                int w = (int)(canvas.Width / ratio);
-                int h = (int)(canvas.Height / ratio);
-                int[] result = new int[2];
-                result[0] = w;
-                result[1] = h;
-                return result;
-            }
-        }
-
         private void mainPictureBox_Click(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
@@ -63,7 +45,6 @@ namespace OrganicChemistryNames
                 if (me.Button == MouseButtons.Left)
                 {
                     grid.addElement(x, y, paintingType());
-
                 }
                 else if (me.Button == MouseButtons.Right)
                 {
@@ -74,9 +55,9 @@ namespace OrganicChemistryNames
             {
                 //do nothing
             }
-            
 
-            
+            List<Element> longestChain = MoleculeNamer.longestCarbonChain(grid.Grid);
+            StatusLabel.Text = Element.stems[longestChain.Count] + "an";
             mainPictureBox.Image = grid.renderedGrid();
         }
 
