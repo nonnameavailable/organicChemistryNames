@@ -56,8 +56,7 @@ namespace OrganicChemistryNames
                 //do nothing
             }
 
-            List<Element> longestChain = MoleculeNamer.longestCarbonChain(grid.Grid);
-            StatusLabel.Text = Element.stems[longestChain.Count] + "an";
+            StatusLabel.Text = MoleculeNamer.moleculeName(grid.Grid);
             mainPictureBox.Image = grid.renderedGrid();
         }
 

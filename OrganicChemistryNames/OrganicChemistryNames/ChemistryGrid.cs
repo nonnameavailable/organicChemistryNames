@@ -71,6 +71,7 @@ namespace OrganicChemistryNames
             {
                 e.draw(g, SqSize, false, Color.Green);
             }
+            MoleculeNamer.moleculeName(grid);
             //END OF NAMER TESTING
             return result;
         }
@@ -194,7 +195,6 @@ namespace OrganicChemistryNames
                         //MessageBox.Show("bondcount: " + bondCount + Environment.NewLine + "maxbonds: " + Element.maxBondMap[type] + Environment.NewLine + "type: " + type);
                         if (bondCount > Element.maxBondMap[type])
                         {
-                            MessageBox.Show("quitting");
                             return false;
 
                         }

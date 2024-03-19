@@ -20,6 +20,7 @@ namespace OrganicChemistryNames
         public const int F = 7;
         public const int Br = 8;
         public const int I = 9;
+        public const int ALL = -2;
 
         public static Color gridColor = Color.FromArgb(220, 220, 220);
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I" };
@@ -27,8 +28,11 @@ namespace OrganicChemistryNames
         public static Color[] fontColorMap = new Color[] { Color.White, Color.Black, Color.Black, Color.Black, Color.Black, Color.Black, Color.Blue, Color.Blue, Color.Blue, Color.Blue };
         public static Color[] backgroundColorMap = new Color[] { Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White };
 
-        public static string[] stems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
+        public static string[] carbonStems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
             "undek", "dodek", "tridek", "tetradek", "pentadek", "hexadek", "heptadek", "oktadek", "nonadek", "ikosan" };
+        public static string[] counters = new string[] { "", "", "di", "tri", "tetra", "penta", "hexa", "hepta", "okta", "nona", "deka"};
+        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "iod" };
+
 
 
         private int type;

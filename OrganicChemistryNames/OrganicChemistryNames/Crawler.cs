@@ -25,8 +25,8 @@ namespace OrganicChemistryNames
 
         public void move(int[][] grid, List<Crawler> swarm)
         {
-            if (!canMove) return;
-            List<Element> neighboringCarbons = MoleculeNamer.neighboringCarbons(x, y, grid);
+            if (!canMove || swarm.Count < 2) return;
+            List<Element> neighboringCarbons = MoleculeNamer.neighboringElements(x, y, grid, Element.C);
             int neighborCount = neighboringCarbons.Count;
             Element lastPath = path.Count > 1 ? path[path.Count - 2] : path.Last();
             bool lastPathIsOnlyNeighbor = neighborCount == 1 && lastPath.Equals(neighboringCarbons[0]);

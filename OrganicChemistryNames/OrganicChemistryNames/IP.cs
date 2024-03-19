@@ -111,5 +111,33 @@ namespace OrganicChemistryNames
 			}
 			return result;
 		}
+		public static void Increment<T>(this Dictionary<T, int> dictionary, T key)
+		{
+			int count;
+			dictionary.TryGetValue(key, out count);
+			dictionary[key] = count + 1;
+		}
+		public static void AddToList<T>(this Dictionary<T, List<int>> dictionary, T key, int newPosition)
+		{
+			if (dictionary.TryGetValue(key, out List<int> positions))
+			{
+				positions.Add(newPosition);
+			}
+			else
+			{
+				positions = new List<int> { newPosition };
+				dictionary[key] = positions;
+			}
+		}
+
+		public static string listToString(List<int> list, string separator)
+        {
+			string result = "";
+			foreach(int o in list)
+            {
+				result += o.ToString() + separator;
+            }
+			return result.Substring(0, result.Length - separator.Length);
+        }
 	}
 }
