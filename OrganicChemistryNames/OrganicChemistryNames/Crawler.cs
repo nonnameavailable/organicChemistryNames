@@ -25,8 +25,13 @@ namespace OrganicChemistryNames
 
         public void move(int[][] grid, List<Crawler> swarm)
         {
-            if (!canMove || swarm.Count < 2) return;
-            List<Element> neighboringCarbons = MoleculeNamer.neighboringElements(x, y, grid, Element.C);
+            if (!canMove) return;
+            List<Element> neighboringCarbons = path[path.Count - 1].neighboringElements(grid, Element.C);
+            if (neighboringCarbons.Count == 0)
+            {
+                CanMove = false;
+                return;
+            }
             int neighborCount = neighboringCarbons.Count;
             Element lastPath = path.Count > 1 ? path[path.Count - 2] : path.Last();
             bool lastPathIsOnlyNeighbor = neighborCount == 1 && lastPath.Equals(neighboringCarbons[0]);
@@ -55,6 +60,7 @@ namespace OrganicChemistryNames
             path.Add(c);
             x = c.X;
             y = c.Y;
+            return;
         }
 
         private List<Element> pathCopy()
@@ -67,14 +73,13 @@ namespace OrganicChemistryNames
             return result;
         }
 
-        private string listToString(List<Element> list)
+        public static bool swarmCanMove(List<Crawler> swarm)
         {
-            string result = Environment.NewLine;
-            foreach(Element e in list)
+            foreach (Crawler c in swarm)
             {
-                result += e.X + " x " + e.Y + System.Environment.NewLine;
+                if (c.CanMove) return true;
             }
-            return result;
+            return false;
         }
 
         public int X { get => x; set => x = value; }

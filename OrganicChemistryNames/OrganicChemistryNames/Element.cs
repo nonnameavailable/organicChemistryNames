@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace OrganicChemistryNames
 {
@@ -32,7 +33,6 @@ namespace OrganicChemistryNames
             "undek", "dodek", "tridek", "tetradek", "pentadek", "hexadek", "heptadek", "oktadek", "nonadek", "ikosan" };
         public static string[] counters = new string[] { "", "", "di", "tri", "tetra", "penta", "hexa", "hepta", "okta", "nona", "deka"};
         public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "iod" };
-
 
 
         private int type;
@@ -78,7 +78,7 @@ namespace OrganicChemistryNames
             miniImage.Dispose();
         }
 
-        public void draw(Graphics g, int sqSize, bool isRotated, Color alternateBgColor)
+        public void draw(Graphics g, int sqSize, bool isRotated, Color alternateBgColor, string indexText)
         {
             Bitmap miniImage = new Bitmap(sqSize, sqSize);
             Graphics mg = Graphics.FromImage(miniImage);
@@ -95,11 +95,13 @@ namespace OrganicChemistryNames
             int ox = 0;
             int oy = isRotated ? -sqSize : 0;
 
-
+            
 
             mg.FillRectangle(new SolidBrush(alternateBgColor), ox, oy, sqSize, sqSize);
             mg.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), ox, oy, sqSize, sqSize);
             mg.DrawString(txt, textFont, new SolidBrush(textColor), ox, oy);
+
+            mg.DrawString(indexText, new Font("Arial", (float)(sqSize * 0.2), FontStyle.Bold), new SolidBrush(Color.Black), ox, oy);
 
             mg.Dispose();
             g.DrawImage(miniImage, xc, yc);
@@ -109,6 +111,69 @@ namespace OrganicChemistryNames
         public bool Equals(Element e)
         {
             return X == e.X && Y == e.Y;
+        }
+        public bool isInList(List<Element> list)
+        {
+            foreach (Element le in list)
+            {
+                if (Equals(le)) return true;
+            }
+            return false;
+        }
+
+        public List<Element> neighboringElements(int[][] grid, int type)
+        {
+            List<Element> result = new List<Element>();
+            int maxX = grid[0].Length - 1;
+            int maxY = grid.Length - 1;
+            if (x + 2 < maxX && (grid[y][x + 2] == type || type == Element.ALL) && grid[y][x + 1] > 0)
+            {
+                result.Add(new Element(x + 2, y, grid[y][x + 2]));
+            }
+            if (y - 2 > 0 && (grid[y - 2][x] == type || type == Element.ALL) && grid[y - 1][x] > 0)
+            {
+                result.Add(new Element(x, y - 2, grid[y - 2][x]));
+            }
+            if (y + 2 < maxY && (grid[y + 2][x] == type || type == Element.ALL) && grid[y + 1][x] > 0)
+            {
+                result.Add(new Element(x, y + 2, grid[y + 2][x]));
+            }
+            if (x - 2 > 0 && (grid[y][x - 2] == type || type == Element.ALL) && grid[y][x - 1] > 0)
+            {
+                result.Add(new Element(x - 2, y, grid[y][x - 2]));
+            }
+            return result;
+        }
+        public List<Element> neighboringBonds(int[][] grid)
+        {
+            List<Element> result = new List<Element>();
+            int maxX = grid[0].Length - 1;
+            int maxY = grid.Length - 1;
+            if (grid[y][x + 1] > 0 && grid[y][x + 1] <= 3)
+            {
+                result.Add(new Element(x + 1, y, grid[y][x + 1]));
+            }
+            if (grid[y - 1][x] > 0 && grid[y - 1][x] <= 3)
+            {
+                result.Add(new Element(x, y - 1, grid[y - 1][x]));
+            }
+            if (grid[y + 1][x] > 0 && grid[y + 1][x] <= 3)
+            {
+                result.Add(new Element(x, y + 1, grid[y + 1][x]));
+            }
+            if (grid[y][x - 1] > 0 && grid[y][x - 1] <= 3)
+            {
+                result.Add(new Element(x - 1, y, grid[y][x - 1]));
+            }
+            return result;
+        }
+
+        public Element bondBetween(Element e, int[][] grid)
+        {
+            int xC = (e.X - x) / 2 + x;
+            int yC = (e.Y - y) / 2 + y;
+            Element result = new Element(xC, yC, grid[yC][xC]);
+            return result;
         }
     }
 }

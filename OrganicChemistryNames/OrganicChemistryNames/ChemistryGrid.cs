@@ -69,9 +69,8 @@ namespace OrganicChemistryNames
             List<Element> longestCarbonChain = MoleculeNamer.longestCarbonChain(grid);
             foreach(Element e in longestCarbonChain)
             {
-                e.draw(g, SqSize, false, Color.Green);
+                e.draw(g, SqSize, false, Color.Green, (longestCarbonChain.IndexOf(e) + 1).ToString());
             }
-            MoleculeNamer.moleculeName(grid);
             //END OF NAMER TESTING
             return result;
         }
@@ -86,6 +85,7 @@ namespace OrganicChemistryNames
             bool hasMultipleNeighbors = nbrDr[2] > 1;
             bool clickingOnBond = currentElement > 0 && currentElement <= 3;
             bool typeIsBond = type > 0 && type <= 3;
+            bool bondOnEmptyGrid = typeIsBond && emptyGrid;
             bool changingBonds = clickingOnBond && typeIsBond;
             bool elementOnBond = (currentElement > 0 && currentElement <= 3) && !typeIsBond;
             bool bondOnEmpty = typeIsBond && currentElement == 0;
@@ -99,7 +99,7 @@ namespace OrganicChemistryNames
                 return;
             }
 
-            if ((elementOnBond || bondOnEmpty || hasNoNeighbors || hasMultipleNeighbors) && !emptyGrid && !changingElements && !changingBonds) return;
+            if ((elementOnBond || bondOnEmpty || hasNoNeighbors || hasMultipleNeighbors) && !emptyGrid && !changingElements && !changingBonds || bondOnEmptyGrid) return;
 
             if (changingBonds || changingElements || emptyGrid)
             {
@@ -118,8 +118,15 @@ namespace OrganicChemistryNames
 
         private void attachElement(int x, int y, int type, int[] direction)
         {
+            int maxX = grid[0].Length - 2;
+            int maxY = grid.Length - 2;
+            int minX = 1;
+            int minY = 1;
+            int xC = x + direction[0];
+            int yC = y + direction[1];
+            if (yC > maxY || yC < minY || xC > maxX || xC < minX) return;
             grid[y][x] = Element.SINGLE_BOND;
-            grid[y + direction[1]][x + direction[0]] = type;
+            grid[yC][xC] = type;
         }
 
         private void clearGridPoint(int x, int y)

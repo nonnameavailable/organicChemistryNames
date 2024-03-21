@@ -56,7 +56,9 @@ namespace OrganicChemistryNames
                 //do nothing
             }
 
-            StatusLabel.Text = MoleculeNamer.moleculeName(grid.Grid);
+            string mName = MoleculeNamer.moleculeName(grid.Grid);
+            NameRTB.Text = "";
+            AppendNameRTB(mName, new Font("Arial", 24), Color.Black, Color.Beige);
             mainPictureBox.Image = grid.renderedGrid();
         }
 
@@ -71,6 +73,27 @@ namespace OrganicChemistryNames
                 }
             }
             return 0;
+        }
+
+        private void AppendNameRTB(string text, Font selfont, Color color, Color bcolor)
+        {
+            // append the text to the RichTextBox control
+            RichTextBox box = NameRTB;
+            int start = box.TextLength;
+            box.AppendText(text);
+            int end = box.TextLength;
+
+            // select the new text
+            box.Select(start, end - start);
+            // set the attributes of the new text
+            box.SelectionColor = color;
+            box.SelectionFont = selfont;
+            box.SelectionBackColor = bcolor;
+            // unselect
+            box.Select(end, 0);
+
+            // only required for multi line text to scroll to the end
+            box.ScrollToCaret();
         }
     }
 }
