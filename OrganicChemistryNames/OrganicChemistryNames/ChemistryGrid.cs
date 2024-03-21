@@ -66,7 +66,7 @@ namespace OrganicChemistryNames
             }
 
             //NAMER TESTING
-            List<Element> longestCarbonChain = MoleculeNamer.longestCarbonChain(grid);
+            List<Element> longestCarbonChain = NH.longestCarbonChain(grid);
             foreach(Element e in longestCarbonChain)
             {
                 e.draw(g, SqSize, false, Color.Green, (longestCarbonChain.IndexOf(e) + 1).ToString());

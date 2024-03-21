@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace OrganicChemistryNames
@@ -56,7 +55,8 @@ namespace OrganicChemistryNames
                 //do nothing
             }
 
-            string mName = MoleculeNamer.moleculeName(grid.Grid);
+            MoleculeNamer mn = new MoleculeNamer(grid.Grid);
+            string mName = mn.moleculeName(grid.Grid);
             NameRTB.Text = "";
             AppendNameRTB(mName, new Font("Arial", 24), Color.Black, Color.Beige);
             mainPictureBox.Image = grid.renderedGrid();
