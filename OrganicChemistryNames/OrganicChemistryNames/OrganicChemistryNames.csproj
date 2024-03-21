@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CarbonChainer.cs" />
     <Compile Include="ChemistryGrid.cs" />
     <Compile Include="Crawler.cs" />
     <Compile Include="Element.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Swarm.cs" />
+    <Compile Include="YlGroupNamer.cs" />
     <EmbeddedResource Include="ElementButton.resx">
       <DependentUpon>ElementButton.cs</DependentUpon>
     </EmbeddedResource>

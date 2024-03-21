@@ -129,6 +129,18 @@ namespace OrganicChemistryNames
 				dictionary[key] = positions;
 			}
 		}
+		public static void AddToList<T>(this Dictionary<T, List<Element>> dictionary, T key, Element newPosition)
+		{
+			if (dictionary.TryGetValue(key, out List<Element> positions))
+			{
+				positions.Add(newPosition);
+			}
+			else
+			{
+				positions = new List<Element> { newPosition };
+				dictionary[key] = positions;
+			}
+		}
 
 		public static string listToString(List<int> list, string separator)
         {
@@ -139,5 +151,14 @@ namespace OrganicChemistryNames
             }
 			return result.Substring(0, result.Length - separator.Length);
         }
+		public static string listToString(List<Element> list, string separator)
+		{
+			string result = "";
+			foreach (Element e in list)
+			{
+				result += e.CarbonChainConnection.ToString() + separator;
+			}
+			return result.Substring(0, result.Length - separator.Length);
+		}
 	}
 }

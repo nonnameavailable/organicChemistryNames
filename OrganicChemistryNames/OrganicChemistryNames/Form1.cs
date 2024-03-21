@@ -56,7 +56,7 @@ namespace OrganicChemistryNames
             }
 
             MoleculeNamer mn = new MoleculeNamer(grid.Grid);
-            string mName = mn.moleculeName(grid.Grid);
+            string mName = mn.moleculeName();
             NameRTB.Text = "";
             AppendNameRTB(mName, new Font("Arial", 24), Color.Black, Color.Beige);
             mainPictureBox.Image = grid.renderedGrid();

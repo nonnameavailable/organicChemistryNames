@@ -38,17 +38,20 @@ namespace OrganicChemistryNames
         private int type;
         private int x;
         private int y;
+        private int carbonChainConnection;
 
         public Element(int x, int y, int type)
         {
             this.type = type;
             this.x = x;
             this.y = y;
+            carbonChainConnection = -1;
         }
 
         public int Type { get => type; set => type = value; }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
+        public int CarbonChainConnection { get => carbonChainConnection; set => carbonChainConnection = value; }
 
         public void draw(Graphics g, int sqSize, bool isRotated)
         {

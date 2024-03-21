@@ -24,6 +24,10 @@ namespace OrganicChemistryNames
             }
             return result;
         }
+        public static List<Element> longestCarbonChain(int[][] grid, Element startCarbon)
+        {
+            return new Swarm(startCarbon.X, startCarbon.Y, grid).LongestPath;
+        }
         public static List<Element> endCarbons(int[][] grid)
         {
             List<Element> result = new List<Element>();
@@ -60,7 +64,9 @@ namespace OrganicChemistryNames
             {
                 Element currentCarbon = longestCC[i];
                 Element nextCarbon = longestCC[i + 1];
-                result.Add(currentCarbon.bondBetween(nextCarbon, grid));
+                Element bond = currentCarbon.bondBetween(nextCarbon, grid);
+                bond.CarbonChainConnection = i + 1;
+                result.Add(bond);
             }
             return result;
         }

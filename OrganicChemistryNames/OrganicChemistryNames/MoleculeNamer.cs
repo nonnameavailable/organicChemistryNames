@@ -10,26 +10,44 @@ namespace OrganicChemistryNames
 {
     class MoleculeNamer
     {
-        private int[][] grid;
-        private List<Element> longestCC;
-        private List<Element> lccBonds;
-        private Dictionary<int, List<int>> extrasPositions;
-        private Dictionary<int, List<int>> bondsPositions;
-        private static List<int> elementOrderList = new List<int>() { 8, 6, 7, 9, 4 };
+        protected int[][] grid;
+        protected List<Element> longestCC;
+        protected List<Element> lccBonds;
+        protected List<Element> ylCarbons;
+        protected Dictionary<int, List<Element>> extrasPositions;
+        protected Dictionary<int, List<Element>> bondsPositions;
+        protected static List<int> elementOrderList = new List<int>() { 8, 6, 7, 9 };
+        protected Element startCarbon;
+
         public MoleculeNamer(int[][] grid)
         {
             this.grid = grid;
-            update();
         }
 
-        public string moleculeName(int[][] grid)
+        public string moleculeName()
         {
+            update();
             string result = "";
             result += extrasNamePart();
-            if (result.Length > 0)
+            if(extrasPositions.TryGetValue(4, out List<Element> carbonsList))
             {
-                result = result.Substring(0, result.Length - 1);
+                Dictionary<string, List<Element>> ylGroups = new Dictionary<string, List<Element>>();
+                foreach (Element e in carbonsList)
+                {
+                    YlGroupNamer ygn = new YlGroupNamer(grid, e);
+                    ygn.update();
+                    ylGroups.AddToList(ygn.moleculeName(), e);
+                }
+                foreach(KeyValuePair<string, List<Element>> kvp in ylGroups)
+                {
+                    result += IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-";
+                }
+                if (ylGroups.Count > 0)
+                {
+                    result = result.Substring(0, result.Length - 1);
+                }
             }
+
 
             result += Element.carbonStems[longestCC.Count]; // stem name
             result += bondsNamePart();
@@ -37,18 +55,23 @@ namespace OrganicChemistryNames
             return result;
         }
 
+        //private List<Element> getYlCarbons()
+        //{
+        //    return extrasPositions.TryGetValue;
+        //}
+
         private string extrasNamePart()
         {
             string result = "";
             foreach (int i in elementOrderList)
             {
-                extrasPositions.TryGetValue(i, out List<int> positions);
+                extrasPositions.TryGetValue(i, out List<Element> positions);
                 if (positions != null && positions.Count > 0)
                 {
                     string name = Element.counters[positions.Count] + Element.elementNames[i];
-                    result += IP.listToString(positions, ",") + "-" + name + "-";
+                    bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
+                    result += (hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-";
                 }
-
             }
             return result;
             //foreach (KeyValuePair<int, List<int>> kvp in extrasPositions)
@@ -63,7 +86,7 @@ namespace OrganicChemistryNames
         {
             string result = "";
             if (bondsPositions.Count == 0) result += "an";
-            foreach (KeyValuePair<int, List<int>> kvp in bondsPositions)
+            foreach (KeyValuePair<int, List<Element>> kvp in bondsPositions)
             {
                 bool onlySingleBonds = kvp.Key == 1 && bondsPositions.Count == 1;
                 bool singleBond = kvp.Key == 1;
@@ -73,9 +96,10 @@ namespace OrganicChemistryNames
                 }
                 else if (!singleBond)
                 {
-                    List<int> positions = bondsPositions[kvp.Key];
+                    List<Element> positions = bondsPositions[kvp.Key];
                     string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key];
-                    result += "-" + IP.listToString(positions, ",") + "-" + name;
+                    bool includePositions = longestCC.Count > 2;
+                    result += (includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name;
                 }
             }
             return result;
@@ -85,8 +109,8 @@ namespace OrganicChemistryNames
             longestCC = NH.longestCarbonChain(grid);
             lccBonds = NH.longestCCBonds(longestCC, grid);
 
-            extrasPositions = new Dictionary<int, List<int>>();
-            bondsPositions = new Dictionary<int, List<int>>();
+            extrasPositions = new Dictionary<int, List<Element>>();
+            bondsPositions = new Dictionary<int, List<Element>>();
             for (int i = 0; i < longestCC.Count; i++)
             {
                 Element c = longestCC[i];
@@ -95,16 +119,18 @@ namespace OrganicChemistryNames
                 {
                     if (!ne.isInList(longestCC))
                     {
-                        extrasPositions.AddToList(ne.Type, i + 1);
+                        ne.CarbonChainConnection = i + 1;
+                        extrasPositions.AddToList(ne.Type, ne);
                     }
                 }
 
                 if (i < longestCC.Count - 1)
                 {
-                    bondsPositions.AddToList(lccBonds[i].Type, i + 1);
+                    bondsPositions.AddToList(lccBonds[i].Type, lccBonds[i]);
                 }
             }
         }
+        
 
     }
 }
