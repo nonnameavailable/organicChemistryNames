@@ -81,31 +81,17 @@ namespace OrganicChemistryNames
         }
         public static List<Element> longestCarbonChain(int[][] grid)
         {
-            List<Crawler> swarm = new List<Crawler>();
-            foreach(Element ec in endCarbons(grid))
+            List<Swarm> swarms = new List<Swarm>();
+            foreach (Element ec in endCarbons(grid))
             {
-                swarm.Add(new Crawler(ec.X, ec.Y));
+                swarms.Add(new Swarm(ec.X, ec.Y, grid));
             }
-            if (swarm.Count == 0) return new List<Element>(); 
-            while(Crawler.swarmCanMove(swarm))
-            {
-                for (int j = 0; j < swarm.Count; j++)
-                {
-                    Crawler cc = swarm[j];
-                    cc.move(grid, swarm);
-                }
-            }
+            if (swarms.Count == 0) return new List<Element>();
 
-            List<Element> result = new List<Element>();
-            int longestPath = 0;
-            foreach (Crawler cr in swarm)
+            List<Element> result = swarms[0].LongestPath;
+            foreach (Swarm sw in swarms)
             {
-                if (cr.Path.Count > longestPath)
-                {
-                    longestPath = cr.Path.Count;
-                    result = cr.Path;
-                }
-
+                if (sw.LongestPath.Count > result.Count) result = sw.LongestPath;
             }
             return result;
         }

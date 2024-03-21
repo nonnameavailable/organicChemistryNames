@@ -23,14 +23,14 @@ namespace OrganicChemistryNames
             canMove = true;
         }
 
-        public void move(int[][] grid, List<Crawler> swarm)
+        public bool move(int[][] grid, List<Crawler> swarm)
         {
-            if (!canMove) return;
+            if (!canMove) return false;
             List<Element> neighboringCarbons = path[path.Count - 1].neighboringElements(grid, Element.C);
             if (neighboringCarbons.Count == 0)
             {
                 CanMove = false;
-                return;
+                return false;
             }
             int neighborCount = neighboringCarbons.Count;
             Element lastPath = path.Count > 1 ? path[path.Count - 2] : path.Last();
@@ -39,11 +39,11 @@ namespace OrganicChemistryNames
             if (lastPathIsOnlyNeighbor)
             {
                 canMove = false;
-                return;
+                return false;
             }
             if (shouldSpawn)
             {
-                foreach(Element e in neighboringCarbons)
+                foreach (Element e in neighboringCarbons)
                 {
                     if (!e.Equals(lastPath))
                     {
@@ -54,13 +54,13 @@ namespace OrganicChemistryNames
                     }
                 }
                 canMove = false;
-                return;
+                return false;
             }
             Element c = neighboringCarbons[0].Equals(lastPath) ? neighboringCarbons[1] : neighboringCarbons[0];
             path.Add(c);
             x = c.X;
             y = c.Y;
-            return;
+            return true;
         }
 
         private List<Element> pathCopy()
