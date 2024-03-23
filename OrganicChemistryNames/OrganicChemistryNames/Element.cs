@@ -23,14 +23,38 @@ namespace OrganicChemistryNames
         public const int I = 9;
         public const int ALL = -2;
 
-        public static Color gridColor = Color.FromArgb(220, 220, 220);
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I" };
         public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 1 };
-        public static Color[] fontColorMap = new Color[] { Color.White, Color.Black, Color.Black, Color.Black, Color.Black, Color.Black, Color.Blue, Color.Blue, Color.Blue, Color.Blue };
-        public static Color[] backgroundColorMap = new Color[] { Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White, Color.White };
+
+        public static Color[] fontColorMap = new Color[]
+        {
+            Color.White, // empty
+            Color.Black, // single bond
+            Color.Black, // double bond
+            Color.Black, // triple bond
+            Color.White, // carbon
+            Color.Black, // hydrogen
+            Color.Black, // chlorine
+            Color.Black, // fluor
+            Color.White, // bromine
+            Color.White // iodine
+        };
+        public static Color[] backgroundColorMap = new Color[]
+        {
+            Color.White, // empty
+            Color.White, // single bond
+            Color.White, // double bond
+            Color.White, // triple bond
+            Color.Black, // carbon
+            Color.White, // hydrogen
+            Color.PaleGreen, // chlorine
+            Color.LightYellow, // fluor
+            Color.DarkRed, // bromine
+            Color.DarkViolet // iodine
+        };
 
         public static string[] carbonStems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
-            "undek", "dodek", "tridek", "tetradek", "pentadek", "hexadek", "heptadek", "oktadek", "nonadek", "ikosan" };
+            "undek", "dodek", "tridek", "tetradek", "pentadek", "hexadek", "heptadek", "oktadek", "nonadek", "ikos" };
         public static string[] counters = new string[] { "", "", "di", "tri", "tetra", "penta", "hexa", "hepta", "okta", "nona", "deka"};
         public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "iod" };
 
@@ -53,14 +77,12 @@ namespace OrganicChemistryNames
         public int Y { get => y; set => y = value; }
         public int CarbonChainConnection { get => carbonChainConnection; set => carbonChainConnection = value; }
 
-        public void draw(Graphics g, int sqSize, bool isRotated)
+        public void draw(Graphics g, int sqSize, bool isRotated, Color backgroundColor, Color textColor, Color gridColor)
         {
             Bitmap miniImage = new Bitmap(sqSize, sqSize);
             Graphics mg = Graphics.FromImage(miniImage);
             if (isRotated) mg.RotateTransform(90);
 
-            Color textColor = fontColorMap[type];
-            Color backgroundColor = backgroundColorMap[type];
             string txt = characterMap[type];
             Font textFont = IP.fontToFitRect(txt, sqSize, sqSize, "Arial");
 
@@ -81,33 +103,15 @@ namespace OrganicChemistryNames
             miniImage.Dispose();
         }
 
-        public void draw(Graphics g, int sqSize, bool isRotated, Color alternateBgColor, string indexText)
+        public void drawIndex(Graphics g, int sqSize, string indexText, Color fontColor)
         {
             Bitmap miniImage = new Bitmap(sqSize, sqSize);
             Graphics mg = Graphics.FromImage(miniImage);
-            if (isRotated) mg.RotateTransform(90);
 
-            Color textColor = fontColorMap[type];
-            Color backgroundColor = backgroundColorMap[type];
-            string txt = characterMap[type];
-            Font textFont = IP.fontToFitRect(txt, sqSize, sqSize, "Arial");
-
-            int xc = x * sqSize;
-            int yc = y * sqSize;
-
-            int ox = 0;
-            int oy = isRotated ? -sqSize : 0;
-
-            
-
-            mg.FillRectangle(new SolidBrush(alternateBgColor), ox, oy, sqSize, sqSize);
-            mg.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), ox, oy, sqSize, sqSize);
-            mg.DrawString(txt, textFont, new SolidBrush(textColor), ox, oy);
-
-            mg.DrawString(indexText, new Font("Arial", (float)(sqSize * 0.2), FontStyle.Bold), new SolidBrush(Color.Black), ox, oy);
+            mg.DrawString(indexText, new Font("Arial", (float)(sqSize * 0.2), FontStyle.Bold), new SolidBrush(fontColor), 0, 0);
 
             mg.Dispose();
-            g.DrawImage(miniImage, xc, yc);
+            g.DrawImage(miniImage, x * sqSize, y * sqSize);
             miniImage.Dispose();
         }
 

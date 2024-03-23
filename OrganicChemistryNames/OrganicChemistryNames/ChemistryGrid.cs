@@ -15,26 +15,28 @@ namespace OrganicChemistryNames
         private int width;
         private int height;
         private int sqSize;
+        Form1 parentForm;
 
         public int SqSize { get => sqSize; }
         public int Width { get => width; }
         public int Height { get => height; }
         public int[][] Grid { get => grid; }
 
-        public ChemistryGrid(int width, int height, int sqSize)
+        public ChemistryGrid(int width, int height, int sqSize, Form1 parentForm)
         {
             grid = newGrid(width, height);
             this.sqSize = sqSize;
             this.width = width;
             this.height = height;
+            this.parentForm = parentForm;
         }
         private int[][] newGrid(int width, int height)
         {
             int[][] result = new int[height][];
-            for(int j = 0; j < height; j++)
+            for (int j = 0; j < height; j++)
             {
                 result[j] = new int[width];
-                for(int i = 0; i < width; i++)
+                for (int i = 0; i < width; i++)
                 {
                     result[j][i] = 0;
                 }
@@ -44,32 +46,29 @@ namespace OrganicChemistryNames
 
         public Bitmap renderedGrid()
         {
-            List<Element> elementList = new List<Element>();
             Bitmap result = new Bitmap(width * sqSize, height * sqSize);
             Graphics g = Graphics.FromImage(result);
-            for (int j = 0; j < height; j++)
+            List<Color> bgColorList = parentForm.BgColorList;
+            List<Color> fontColorList = parentForm.FontColorList;
+            for (int j = 1; j < height - 1; j++)
             {
-                for (int i = 0; i < width; i++)
+                for (int i = 1; i < width - 1; i++)
                 {
                     int x = i * sqSize;
                     int y = j * sqSize;
                     int val = grid[j][i];
-                    if (val != 0) elementList.Add(new Element(i, j, val));
-                    g.FillRectangle(new SolidBrush(Element.backgroundColorMap[val]), x, y, sqSize, sqSize);
-                    g.DrawRectangle(new Pen(Element.gridColor, (int)(sqSize * 0.05)), x, y, sqSize, sqSize);
+
+                    Element e = new Element(i, j, val);
+                    bool isVerticalBond = e.Type <= 3 && grid[e.Y][e.X + 1] == 0;
+                    e.draw(g, SqSize, isVerticalBond, bgColorList[e.Type], fontColorList[e.Type], fontColorList[0]);
                 }
-            }
-            foreach(Element e in elementList)
-            {
-                bool isVerticalBond = e.Type <= 3 && grid[e.Y][e.X + 1] == 0;
-                e.draw(g, SqSize, isVerticalBond);
             }
 
             //NAMER TESTING
             List<Element> longestCarbonChain = NH.longestCarbonChain(grid);
             foreach(Element e in longestCarbonChain)
             {
-                e.draw(g, SqSize, false, Color.Green, (longestCarbonChain.IndexOf(e) + 1).ToString());
+                e.drawIndex(g, SqSize, (longestCarbonChain.IndexOf(e) + 1).ToString(), parentForm.IndexColor);
             }
             //END OF NAMER TESTING
             return result;

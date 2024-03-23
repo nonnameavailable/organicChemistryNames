@@ -78,7 +78,7 @@ namespace OrganicChemistryNames
         private string extrasNamePart()
         {
             string result = "";
-            foreach (int i in elementOrderList)
+            foreach (int i in halogenOrderList)
             {
                 extrasPositions.TryGetValue(i, out List<Element> positions);
                 if (positions != null && positions.Count > 0)

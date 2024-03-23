@@ -21,6 +21,8 @@ namespace OrganicChemistryNames
             this.type = type;
             resizeFont();
             this.Resize += ElementButton_Resize;
+            backCB.Color = Element.backgroundColorMap[type];
+            fontCB.Color = Element.fontColorMap[type];
         }
 
         private void ElementButton_Resize(object sender, EventArgs e)
@@ -50,6 +52,7 @@ namespace OrganicChemistryNames
                 IsPainting = true;
             }
         }
-
+        public Color BgColor { get => backCB.Color; }
+        public Color FontColor { get => fontCB.Color; }
     }
 }

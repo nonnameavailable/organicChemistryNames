@@ -18,20 +18,22 @@ namespace OrganicChemistryNames
         public Form1()
         {
             InitializeComponent();
-            grid = new ChemistryGrid(30, 20, 50);
+            grid = new ChemistryGrid(30, 20, 50, this);
             canvas = grid.renderedGrid();
             mainPictureBox.Image = canvas;
 
-            int buttonSize = (int)(elementFLP.Width * 0.8);
-            for(int i = 1; i < Element.characterMap.Length; i++)
+            for (int i = 1; i < Element.characterMap.Length; i++)
             {
                 ElementButton eb = new ElementButton(i);
-                eb.Width = buttonSize;
-                eb.Height = buttonSize;
                 if (i == Element.C) eb.IsPainting = true;
                 elementFLP.Controls.Add(eb);
             }
 
+        }
+
+        public void repaint()
+        {
+            mainPictureBox.Image = grid.renderedGrid();
         }
 
         private void mainPictureBox_Click(object sender, EventArgs e)
@@ -59,12 +61,12 @@ namespace OrganicChemistryNames
             string mName = mn.moleculeName();
             NameRTB.Text = "";
             AppendNameRTB(mName, new Font("Arial", 24), Color.Black, Color.Beige);
-            mainPictureBox.Image = grid.renderedGrid();
+            repaint();
         }
 
         private int paintingType()
         {
-            foreach(Control c in elementFLP.Controls)
+            foreach (Control c in elementFLP.Controls)
             {
                 ElementButton eb = (ElementButton)c;
                 if (eb.IsPainting)
@@ -95,5 +97,34 @@ namespace OrganicChemistryNames
             // only required for multi line text to scroll to the end
             box.ScrollToCaret();
         }
+
+        public List<Color> BgColorList
+        { 
+            get
+            {
+                List<Color> result = new List<Color>();
+                result.Add(emptyCB.Color);
+                foreach(ElementButton eb in elementFLP.Controls)
+                {
+                    result.Add(eb.BgColor);
+                }
+                return result;
+            }
+        }
+        public List<Color> FontColorList
+        {
+            get
+            {
+                List<Color> result = new List<Color>();
+                result.Add(gridCB.Color);
+                foreach (ElementButton eb in elementFLP.Controls)
+                {
+                    result.Add(eb.FontColor);
+                }
+                return result;
+            }
+        }
+
+        public Color IndexColor { get => indexCB.Color; }
     }
 }

@@ -30,6 +30,7 @@ namespace OrganicChemistryNames
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.NameRTB = new System.Windows.Forms.RichTextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.elementFLP = new System.Windows.Forms.FlowLayoutPanel();
@@ -38,10 +39,13 @@ namespace OrganicChemistryNames
             this.mainPictureBox = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.NameRTB = new System.Windows.Forms.RichTextBox();
+            this.emptyCB = new OrganicChemistryNames.ColorButton();
+            this.gridCB = new OrganicChemistryNames.ColorButton();
+            this.indexCB = new OrganicChemistryNames.ColorButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.mainPicturePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -50,7 +54,7 @@ namespace OrganicChemistryNames
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.NameRTB, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 0);
@@ -61,8 +65,18 @@ namespace OrganicChemistryNames
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(739, 423);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(951, 497);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // NameRTB
+            // 
+            this.NameRTB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NameRTB.Location = new System.Drawing.Point(153, 400);
+            this.NameRTB.Name = "NameRTB";
+            this.NameRTB.Size = new System.Drawing.Size(795, 72);
+            this.NameRTB.TabIndex = 2;
+            this.NameRTB.Text = "";
             // 
             // tabControl1
             // 
@@ -73,7 +87,7 @@ namespace OrganicChemistryNames
             this.tabControl1.Name = "tabControl1";
             this.tableLayoutPanel1.SetRowSpan(this.tabControl1, 2);
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(94, 417);
+            this.tabControl1.Size = new System.Drawing.Size(144, 491);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -83,7 +97,7 @@ namespace OrganicChemistryNames
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(86, 391);
+            this.tabPage1.Size = new System.Drawing.Size(136, 465);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -94,15 +108,18 @@ namespace OrganicChemistryNames
             this.elementFLP.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.elementFLP.Location = new System.Drawing.Point(0, 0);
             this.elementFLP.Name = "elementFLP";
-            this.elementFLP.Size = new System.Drawing.Size(83, 404);
+            this.elementFLP.Size = new System.Drawing.Size(136, 404);
             this.elementFLP.TabIndex = 0;
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.indexCB);
+            this.tabPage2.Controls.Add(this.gridCB);
+            this.tabPage2.Controls.Add(this.emptyCB);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(86, 729);
+            this.tabPage2.Size = new System.Drawing.Size(136, 465);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -112,9 +129,9 @@ namespace OrganicChemistryNames
             this.mainPicturePanel.AutoScroll = true;
             this.mainPicturePanel.Controls.Add(this.mainPictureBox);
             this.mainPicturePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPicturePanel.Location = new System.Drawing.Point(103, 3);
+            this.mainPicturePanel.Location = new System.Drawing.Point(153, 3);
             this.mainPicturePanel.Name = "mainPicturePanel";
-            this.mainPicturePanel.Size = new System.Drawing.Size(633, 317);
+            this.mainPicturePanel.Size = new System.Drawing.Size(795, 391);
             this.mainPicturePanel.TabIndex = 1;
             // 
             // mainPictureBox
@@ -132,9 +149,9 @@ namespace OrganicChemistryNames
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 401);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 475);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(739, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(951, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -144,21 +161,35 @@ namespace OrganicChemistryNames
             this.StatusLabel.Size = new System.Drawing.Size(67, 17);
             this.StatusLabel.Text = "StatusLabel";
             // 
-            // NameRTB
+            // emptyCB
             // 
-            this.NameRTB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.NameRTB.Location = new System.Drawing.Point(103, 326);
-            this.NameRTB.Name = "NameRTB";
-            this.NameRTB.Size = new System.Drawing.Size(633, 72);
-            this.NameRTB.TabIndex = 2;
-            this.NameRTB.Text = "";
+            this.emptyCB.Color = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.emptyCB.Location = new System.Drawing.Point(11, 11);
+            this.emptyCB.Name = "emptyCB";
+            this.emptyCB.Size = new System.Drawing.Size(43, 42);
+            this.emptyCB.TabIndex = 0;
+            // 
+            // gridCB
+            // 
+            this.gridCB.Color = System.Drawing.Color.DimGray;
+            this.gridCB.Location = new System.Drawing.Point(60, 11);
+            this.gridCB.Name = "gridCB";
+            this.gridCB.Size = new System.Drawing.Size(43, 42);
+            this.gridCB.TabIndex = 1;
+            // 
+            // indexCB
+            // 
+            this.indexCB.Color = System.Drawing.Color.Red;
+            this.indexCB.Location = new System.Drawing.Point(11, 59);
+            this.indexCB.Name = "indexCB";
+            this.indexCB.Size = new System.Drawing.Size(43, 42);
+            this.indexCB.TabIndex = 2;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 423);
+            this.ClientSize = new System.Drawing.Size(951, 497);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
@@ -167,6 +198,7 @@ namespace OrganicChemistryNames
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
             this.mainPicturePanel.ResumeLayout(false);
             this.mainPicturePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
@@ -189,6 +221,9 @@ namespace OrganicChemistryNames
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.RichTextBox NameRTB;
+        private ColorButton gridCB;
+        private ColorButton emptyCB;
+        private ColorButton indexCB;
     }
 }
 

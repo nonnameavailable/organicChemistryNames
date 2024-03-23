@@ -13,10 +13,9 @@ namespace OrganicChemistryNames
         protected int[][] grid;
         protected List<Element> longestCC;
         protected List<Element> lccBonds;
-        protected List<Element> ylCarbons;
         protected Dictionary<int, List<Element>> extrasPositions;
         protected Dictionary<int, List<Element>> bondsPositions;
-        protected static List<int> elementOrderList = new List<int>() { 8, 6, 7, 9 };
+        protected static List<int> halogenOrderList = new List<int>() { 8, 6, 7, 9 };
         protected Element startCarbon;
 
         public MoleculeNamer(int[][] grid)
@@ -27,9 +26,23 @@ namespace OrganicChemistryNames
         public string moleculeName()
         {
             update();
+            string halogenNP = halogensNamePart();
+            string ylGroupsNP = ylGroupsNamePart();
+            if (ylGroupsNP == "" && halogenNP != "") halogenNP = halogenNP.Substring(0, halogenNP.Length - 1);
+            string stemNP = Element.carbonStems[longestCC.Count]; // stem name
+            string bondsNP = bondsNamePart();
+
+            return halogenNP + ylGroupsNP + stemNP + bondsNP;
+        }
+
+        //private List<Element> getYlCarbons()
+        //{
+        //    return extrasPositions.TryGetValue;
+        //}
+        private string ylGroupsNamePart()
+        {
             string result = "";
-            result += extrasNamePart();
-            if(extrasPositions.TryGetValue(4, out List<Element> carbonsList))
+            if (extrasPositions.TryGetValue(4, out List<Element> carbonsList))
             {
                 Dictionary<string, List<Element>> ylGroups = new Dictionary<string, List<Element>>();
                 foreach (Element e in carbonsList)
@@ -38,7 +51,7 @@ namespace OrganicChemistryNames
                     ygn.update();
                     ylGroups.AddToList(ygn.moleculeName(), e);
                 }
-                foreach(KeyValuePair<string, List<Element>> kvp in ylGroups)
+                foreach (KeyValuePair<string, List<Element>> kvp in ylGroups)
                 {
                     result += IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-";
                 }
@@ -47,23 +60,13 @@ namespace OrganicChemistryNames
                     result = result.Substring(0, result.Length - 1);
                 }
             }
-
-
-            result += Element.carbonStems[longestCC.Count]; // stem name
-            result += bondsNamePart();
-
             return result;
         }
-
-        //private List<Element> getYlCarbons()
-        //{
-        //    return extrasPositions.TryGetValue;
-        //}
-
-        private string extrasNamePart()
+        private string halogensNamePart()
         {
             string result = "";
-            foreach (int i in elementOrderList)
+            extrasPositions.TryGetValue(Element.C, out List<Element> ylgroups);
+            foreach (int i in halogenOrderList)
             {
                 extrasPositions.TryGetValue(i, out List<Element> positions);
                 if (positions != null && positions.Count > 0)
@@ -74,12 +77,6 @@ namespace OrganicChemistryNames
                 }
             }
             return result;
-            //foreach (KeyValuePair<int, List<int>> kvp in extrasPositions)
-            //{
-            //    List<int> positions = extrasPositions[kvp.Key];
-            //    string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key];
-            //    result += IP.listToString(positions, ",") + "-" + name + "-";
-            //}
         }
 
         private string bondsNamePart()
