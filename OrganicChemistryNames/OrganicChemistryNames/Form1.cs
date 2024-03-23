@@ -57,7 +57,7 @@ namespace OrganicChemistryNames
                 //do nothing
             }
             NameRTB.Text = "";
-            MoleculeNamer mn = new MoleculeNamer(grid.Grid);
+            MoleculeNamer mn = new MoleculeNamer(grid.Grid, 0);
             mn.setMoleculeName(this);
             repaint();
         }

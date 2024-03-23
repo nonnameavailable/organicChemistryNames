@@ -74,7 +74,6 @@
     <Compile Include="ColorButton.Designer.cs">
       <DependentUpon>ColorButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="YlGroupNamer.cs" />
     <EmbeddedResource Include="ColorButton.resx">
       <DependentUpon>ColorButton.cs</DependentUpon>
     </EmbeddedResource>

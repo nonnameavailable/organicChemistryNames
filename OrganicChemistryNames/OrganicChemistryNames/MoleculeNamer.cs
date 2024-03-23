@@ -18,56 +18,113 @@ namespace OrganicChemistryNames
         protected Dictionary<int, List<Element>> bondsPositions;
         protected static List<int> halogenOrderList = new List<int>() { 8, 6, 7, 9 };
         protected Element startCarbon;
+        protected int depth;
+        protected int carbonConnection;
 
-        public MoleculeNamer(int[][] grid)
+        public int CarbonChainConnection { get => carbonConnection; set => carbonConnection = value; }
+        public MoleculeNamer(int[][] grid, int depth)
         {
             this.grid = grid;
+            this.depth = depth;
+        }
+        public MoleculeNamer(int[][] grid, int depth, Element startCarbon, int carbonConnection)
+        {
+            this.grid = grid;
+            this.depth = depth;
+            this.startCarbon = startCarbon;
+            this.carbonConnection = carbonConnection;
         }
 
         public void setMoleculeName(Form1 form)
         {
-            update();
-            List<TypedString> halogenNP = halogensNamePart();
-            string ylGroupsNP = ylGroupsNamePart();
-            string stemNP = Element.carbonStems[longestCC.Count];
-            List<TypedString> bondsNP = bondsNamePart();
-
-            foreach (TypedString ts in halogenNP)
+            foreach(TypedString ts in MoleculeNameTypedList)
             {
-                string txt = ylGroupsNP == "" && halogenNP.IndexOf(ts) == halogenNP.Count - 1 ? ts.Text.Substring(0, ts.Text.Length - 1) : ts.Text;
-                form.AppendNameRTB(txt, new Font("Arial", 24), Element.fontColorMap[ts.Type], Element.backgroundColorMap[ts.Type]);
-            }
-            form.AppendNameRTB(ylGroupsNP, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
-            form.AppendNameRTB(stemNP, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
-            foreach (TypedString ts in bondsNP)
-            {
-                form.AppendNameRTB(ts.Text, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
+                form.AppendNameRTB(ts.Text, new Font("Arial", 24), Element.fontColorMap[ts.Type], Element.backgroundColorMap[ts.Type]);
             }
         }
 
-        //private List<Element> getYlCarbons()
-        //{
-        //    return extrasPositions.TryGetValue;
-        //}
-        private string ylGroupsNamePart()
+        public string MoleculeNameSimpleString
         {
-            string result = "";
+            get
+            {
+                string result = "";
+                foreach (TypedString ts in MoleculeNameTypedList)
+                {
+                    result += ts.Text;
+                }
+                return result;
+            }
+
+        }
+
+        //public List<TypedString> MoleculeNameTypedList
+        //{
+        //    get
+        //    {
+        //        update();
+        //        List<TypedString> result = halogensNamePart();
+        //        result.Add(new TypedString(ylGroupsNamePart(), Element.C));
+        //        result.Add(new TypedString(Element.carbonStems[longestCC.Count], Element.C));
+        //        result = result.Concat(bondsNamePart()).ToList();
+        //        return result;
+        //    }
+
+        //}
+
+        //private string ylGroupsNamePart()
+        //{
+        //    string result = "";
+        //    if (extrasPositions.TryGetValue(4, out List<Element> carbonsList))
+        //    {
+        //        Dictionary<string, List<Element>> ylGroups = new Dictionary<string, List<Element>>();
+        //        foreach (Element e in carbonsList)
+        //        {
+        //            YlGroupNamer ygn = new YlGroupNamer(grid, depth + 1, e);
+        //            ygn.update();
+        //            ylGroups.AddToList(ygn.moleculeName(), e);
+        //        }
+        //        foreach (KeyValuePair<string, List<Element>> kvp in ylGroups)
+        //        {
+        //            result += IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-";
+        //        }
+        //        if (ylGroups.Count > 0)
+        //        {
+        //            result = result.Substring(0, result.Length - 1);
+        //        }
+        //    }
+        //    return result;
+        //}
+        public List<TypedString> MoleculeNameTypedList
+        {
+            get
+            {
+                update();
+                List<TypedString> result = halogensNamePart();
+                result = result.Concat(ylGroupsNamePart()).ToList();
+                result.Add(new TypedString(Element.carbonStems[longestCC.Count], Element.C));
+                result = result.Concat(bondsNamePart()).ToList();
+                return result;
+            }
+
+        }
+        private List<TypedString> ylGroupsNamePart()
+        {
+            List<TypedString> result = new List<TypedString>();
             if (extrasPositions.TryGetValue(4, out List<Element> carbonsList))
             {
-                Dictionary<string, List<Element>> ylGroups = new Dictionary<string, List<Element>>();
+                Dictionary<string, List<MoleculeNamer>> ylGroups = new Dictionary<string, List<MoleculeNamer>>();
                 foreach (Element e in carbonsList)
                 {
-                    YlGroupNamer ygn = new YlGroupNamer(grid, e);
-                    ygn.update();
-                    ylGroups.AddToList(ygn.moleculeName(), e);
+                    MoleculeNamer mn = new MoleculeNamer(NH.gridWithoutList(grid, longestCC), depth + 1, e, e.CarbonChainConnection);
+                    ylGroups.AddToList(mn.MoleculeNameSimpleString, mn);
                 }
-                foreach (KeyValuePair<string, List<Element>> kvp in ylGroups)
+                int counter = 0;
+                foreach (KeyValuePair<string, List<MoleculeNamer>> kvp in ylGroups)
                 {
-                    result += IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-";
-                }
-                if (ylGroups.Count > 0)
-                {
-                    result = result.Substring(0, result.Length - 1);
+                    string startHyphen = counter == 0 ? "" : "-";
+                    result.Add(new TypedString(startHyphen + IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count], Element.C));
+                    result = result.Concat(kvp.Value[0].MoleculeNameTypedList).ToList();
+                    counter++;
                 }
             }
             return result;
@@ -86,25 +143,34 @@ namespace OrganicChemistryNames
                     result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-", i));
                 }
             }
+            if(result.Count > 0)
+            {
+                TypedString lastTS = result[result.Count - 1];
+                lastTS.Text = lastTS.Text.Substring(0, lastTS.Text.Length - 1);
+                result[result.Count - 1] = lastTS;
+            }
+
             return result;
         }
 
         private List<TypedString> bondsNamePart()
         {
+            string ending = depth == 0 ? "an" : "yl";
             List<TypedString> result = new List<TypedString>();
-            if (bondsPositions.Count == 0) result.Add(new TypedString("an", Element.C));
+            if (bondsPositions.Count == 0) result.Add(new TypedString(ending, Element.C));
             foreach (KeyValuePair<int, List<Element>> kvp in bondsPositions)
             {
                 bool onlySingleBonds = kvp.Key == 1 && bondsPositions.Count == 1;
                 bool singleBond = kvp.Key == 1;
                 if (onlySingleBonds)
                 {
-                    result.Add(new TypedString("an", Element.C));
+                    result.Add(new TypedString(ending, Element.C));
                 }
                 else if (!singleBond)
                 {
                     List<Element> positions = bondsPositions[kvp.Key];
-                    string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key];
+                    string yl = depth > 0 ? "yl" : "";
+                    string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key] + yl;
                     bool includePositions = longestCC.Count > 2;
                     result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, Element.C));
                 }
@@ -113,7 +179,14 @@ namespace OrganicChemistryNames
         }
         private void update()
         {
-            longestCC = NH.longestCarbonChain(grid);
+            if(depth == 0)
+            {
+                longestCC = NH.longestCarbonChain(grid);
+            } else
+            {
+                longestCC = NH.longestCarbonChain(grid, startCarbon);
+            }
+            
             lccBonds = NH.longestCCBonds(longestCC, grid);
 
             extrasPositions = new Dictionary<int, List<Element>>();
@@ -137,16 +210,15 @@ namespace OrganicChemistryNames
                 }
             }
         }
-
-        public struct TypedString
-        { 
-            public TypedString(string text, int type)
-            {
-                Text = text;
-                Type = type;
-            }
-            public string Text { get; }
-            public int Type { get; }
+    }
+    public struct TypedString
+    {
+        public TypedString(string text, int type)
+        {
+            Text = text;
+            Type = type;
         }
+        public string Text { get; set; }
+        public int Type { get; }
     }
 }
