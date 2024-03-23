@@ -56,44 +56,6 @@ namespace OrganicChemistryNames
             }
 
         }
-
-        //public List<TypedString> MoleculeNameTypedList
-        //{
-        //    get
-        //    {
-        //        update();
-        //        List<TypedString> result = halogensNamePart();
-        //        result.Add(new TypedString(ylGroupsNamePart(), Element.C));
-        //        result.Add(new TypedString(Element.carbonStems[longestCC.Count], Element.C));
-        //        result = result.Concat(bondsNamePart()).ToList();
-        //        return result;
-        //    }
-
-        //}
-
-        //private string ylGroupsNamePart()
-        //{
-        //    string result = "";
-        //    if (extrasPositions.TryGetValue(4, out List<Element> carbonsList))
-        //    {
-        //        Dictionary<string, List<Element>> ylGroups = new Dictionary<string, List<Element>>();
-        //        foreach (Element e in carbonsList)
-        //        {
-        //            YlGroupNamer ygn = new YlGroupNamer(grid, depth + 1, e);
-        //            ygn.update();
-        //            ylGroups.AddToList(ygn.moleculeName(), e);
-        //        }
-        //        foreach (KeyValuePair<string, List<Element>> kvp in ylGroups)
-        //        {
-        //            result += IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-";
-        //        }
-        //        if (ylGroups.Count > 0)
-        //        {
-        //            result = result.Substring(0, result.Length - 1);
-        //        }
-        //    }
-        //    return result;
-        //}
         public List<TypedString> MoleculeNameTypedList
         {
             get
@@ -155,7 +117,7 @@ namespace OrganicChemistryNames
 
         private List<TypedString> bondsNamePart()
         {
-            string ending = depth == 0 ? "an" : "yl";
+            string ending = depth == 0 ? "an" : "yl" + ideneEdene();
             List<TypedString> result = new List<TypedString>();
             if (bondsPositions.Count == 0) result.Add(new TypedString(ending, Element.C));
             foreach (KeyValuePair<int, List<Element>> kvp in bondsPositions)
@@ -170,9 +132,33 @@ namespace OrganicChemistryNames
                 {
                     List<Element> positions = bondsPositions[kvp.Key];
                     string yl = depth > 0 ? "yl" : "";
-                    string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key] + yl;
+                    string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key] + yl + ideneEdene();
                     bool includePositions = longestCC.Count > 2;
                     result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, Element.C));
+                }
+            }
+            return result;
+        }
+        private string ideneEdene()
+        {
+            if (depth == 0) return "";
+            List<Element> scb = startCarbon.neighboringBonds(grid);
+            string result = "";
+            foreach(Element bond in scb)
+            {
+                Element dir = new Element(bond.X - startCarbon.X, bond.Y - startCarbon.Y, Element.SINGLE_BOND);
+                int sX = startCarbon.X +  2 * dir.X;
+                int sY = startCarbon.Y + 2 * dir.Y;
+                if(grid[sY][sX] == 0)
+                {
+                    if(bond.Type == Element.DOUBLE_BOND)
+                    {
+                        result = "iden";
+                    } else if(bond.Type == Element.TRIPLE_BOND)
+                    {
+                        result = "idyn";
+                    }
+                    
                 }
             }
             return result;
