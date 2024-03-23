@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Specialized;
+using System.Drawing;
 
 namespace OrganicChemistryNames
 {
@@ -23,16 +24,25 @@ namespace OrganicChemistryNames
             this.grid = grid;
         }
 
-        public string moleculeName()
+        public void setMoleculeName(Form1 form)
         {
             update();
-            string halogenNP = halogensNamePart();
+            List<TypedString> halogenNP = halogensNamePart();
             string ylGroupsNP = ylGroupsNamePart();
-            if (ylGroupsNP == "" && halogenNP != "") halogenNP = halogenNP.Substring(0, halogenNP.Length - 1);
-            string stemNP = Element.carbonStems[longestCC.Count]; // stem name
-            string bondsNP = bondsNamePart();
+            string stemNP = Element.carbonStems[longestCC.Count];
+            List<TypedString> bondsNP = bondsNamePart();
 
-            return halogenNP + ylGroupsNP + stemNP + bondsNP;
+            foreach (TypedString ts in halogenNP)
+            {
+                string txt = ylGroupsNP == "" && halogenNP.IndexOf(ts) == halogenNP.Count - 1 ? ts.Text.Substring(0, ts.Text.Length - 1) : ts.Text;
+                form.AppendNameRTB(txt, new Font("Arial", 24), Element.fontColorMap[ts.Type], Element.backgroundColorMap[ts.Type]);
+            }
+            form.AppendNameRTB(ylGroupsNP, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
+            form.AppendNameRTB(stemNP, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
+            foreach (TypedString ts in bondsNP)
+            {
+                form.AppendNameRTB(ts.Text, new Font("Arial", 24), Element.fontColorMap[Element.C], Element.backgroundColorMap[Element.C]);
+            }
         }
 
         //private List<Element> getYlCarbons()
@@ -62,9 +72,9 @@ namespace OrganicChemistryNames
             }
             return result;
         }
-        private string halogensNamePart()
+        private List<TypedString> halogensNamePart()
         {
-            string result = "";
+            List<TypedString> result = new List<TypedString>();
             extrasPositions.TryGetValue(Element.C, out List<Element> ylgroups);
             foreach (int i in halogenOrderList)
             {
@@ -73,30 +83,30 @@ namespace OrganicChemistryNames
                 {
                     string name = Element.counters[positions.Count] + Element.elementNames[i];
                     bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
-                    result += (hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-";
+                    result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-", i));
                 }
             }
             return result;
         }
 
-        private string bondsNamePart()
+        private List<TypedString> bondsNamePart()
         {
-            string result = "";
-            if (bondsPositions.Count == 0) result += "an";
+            List<TypedString> result = new List<TypedString>();
+            if (bondsPositions.Count == 0) result.Add(new TypedString("an", Element.C));
             foreach (KeyValuePair<int, List<Element>> kvp in bondsPositions)
             {
                 bool onlySingleBonds = kvp.Key == 1 && bondsPositions.Count == 1;
                 bool singleBond = kvp.Key == 1;
                 if (onlySingleBonds)
                 {
-                    result += "an";
+                    result.Add(new TypedString("an", Element.C));
                 }
                 else if (!singleBond)
                 {
                     List<Element> positions = bondsPositions[kvp.Key];
                     string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key];
                     bool includePositions = longestCC.Count > 2;
-                    result += (includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name;
+                    result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, Element.C));
                 }
             }
             return result;
@@ -127,7 +137,16 @@ namespace OrganicChemistryNames
                 }
             }
         }
-        
 
+        public struct TypedString
+        { 
+            public TypedString(string text, int type)
+            {
+                Text = text;
+                Type = type;
+            }
+            public string Text { get; }
+            public int Type { get; }
+        }
     }
 }

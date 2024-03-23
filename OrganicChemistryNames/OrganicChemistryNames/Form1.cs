@@ -56,11 +56,9 @@ namespace OrganicChemistryNames
             {
                 //do nothing
             }
-
-            MoleculeNamer mn = new MoleculeNamer(grid.Grid);
-            string mName = mn.moleculeName();
             NameRTB.Text = "";
-            AppendNameRTB(mName, new Font("Arial", 24), Color.Black, Color.Beige);
+            MoleculeNamer mn = new MoleculeNamer(grid.Grid);
+            mn.setMoleculeName(this);
             repaint();
         }
 
@@ -77,7 +75,7 @@ namespace OrganicChemistryNames
             return 0;
         }
 
-        private void AppendNameRTB(string text, Font selfont, Color color, Color bcolor)
+        public void AppendNameRTB(string text, Font selfont, Color color, Color bcolor)
         {
             // append the text to the RichTextBox control
             RichTextBox box = NameRTB;

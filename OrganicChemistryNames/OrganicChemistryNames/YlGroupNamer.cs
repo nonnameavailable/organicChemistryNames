@@ -14,7 +14,7 @@ namespace OrganicChemistryNames
             this.grid = grid;
             this.startCarbon = startCarbon;
         }
-        new public string moleculeName()
+        public string moleculeName()
         {
             update();
             string result = "";
