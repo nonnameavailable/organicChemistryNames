@@ -33,13 +33,13 @@ namespace OrganicChemistryNames
                 chemistryGrid.addElement(startX + i * 2 + 1, startY, Element.C);
                 longestCC.Add(new Element(startX + i * 2 + 1 + 1, startY, Element.C));
             }
-            List<int> generationList = new List<int>() { 0, 0, 0, 0, 0, 4, 8, 6, 7, 9 };
+            List<int> generationList = new List<int>() { 4, 8, 6, 7, 9 };
             for (int i = 0; i < longestCC.Count; i++)
             {
-                int maxSubLength = Math.Abs(longestCC.Count / 2 - i);
+                int maxSubLength = Math.Abs(Math.Abs(longestCC.Count / 2 - i + 1) - longestCC.Count / 2);
                 Element cc = longestCC[i];
                 int generatedSub = generationList[rnd.Next(0, generationList.Count)];
-                int generatedSubCount = rnd.Next(1, maxSubLength + 1);
+                int generatedSubCount = rnd.Next(0, maxSubLength + 1);
                 if (generatedSub != 0)
                 {
                     for (int j = 0; j < generatedSubCount; j++)
@@ -47,9 +47,8 @@ namespace OrganicChemistryNames
                         chemistryGrid.addElement(cc.X, cc.Y + 1 + j * 2, generatedSub);
                     }
                 }
-
                 generatedSub = generationList[rnd.Next(0, generationList.Count)];
-                generatedSubCount = rnd.Next(1, maxSubLength + 1);
+                generatedSubCount = rnd.Next(0, maxSubLength + 1);
                 if(generatedSub != 0)
                 {
                     for (int j = 0; j < generatedSubCount; j++)

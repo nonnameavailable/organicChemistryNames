@@ -65,12 +65,23 @@ namespace OrganicChemistryNames
             get
             {
                 update();
-                //MessageBox.Show(IP.listToString(longestCC, ",") + " x " + IP.listToString(lccBonds, ","));
-                //MessageBox.Show(IP.listToString(longestCC, ",") + " x " + IP.listToString(lccBonds, ","));
-                List<TypedString> result = halogensNamePart();
-                result = result.Concat(ylGroupsNamePart()).ToList();
-                result.Add(new TypedString(Element.carbonStems[longestCC.Count], Element.C));
-                result = result.Concat(bondsNamePart()).ToList();
+                List<TypedString> halogens = halogensNamePart();
+                List<TypedString> ylGroups = ylGroupsNamePart();
+                TypedString stem = new TypedString(Element.carbonStems[longestCC.Count], Element.C);
+                List<TypedString> bonds = bondsNamePart();
+
+                if(ylGroups.Count == 0 && halogens.Count > 0)
+                {
+                    TypedString lastHalogen = halogens.Last();
+                    lastHalogen.Text = lastHalogen.Text.Substring(0, lastHalogen.Text.Length - 1);
+                    halogens[halogens.Count - 1] = lastHalogen;
+                }
+
+                List<TypedString> result = new List<TypedString>();
+                result = result.Concat(halogens).ToList();
+                result = result.Concat(ylGroups).ToList();
+                result.Add(stem);
+                result = result.Concat(bonds).ToList();
                 return result;
             }
         }
@@ -119,14 +130,8 @@ namespace OrganicChemistryNames
                     string name = Element.counters[positions.Count] + Element.elementNames[i];
                     bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
                     result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-", i));
+                    HasHalogen = true;
                 }
-            }
-            if(result.Count > 0)
-            {
-                hasHalogen = true;
-                TypedString lastTS = result[result.Count - 1];
-                lastTS.Text = lastTS.Text.Substring(0, lastTS.Text.Length - 1);
-                result[result.Count - 1] = lastTS;
             }
 
             return result;
