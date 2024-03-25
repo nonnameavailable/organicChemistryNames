@@ -56,6 +56,29 @@ namespace OrganicChemistryNames
         public static string[] carbonStems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
             "undek", "dodek", "tridek", "tetradek", "pentadek", "hexadek", "heptadek", "oktadek", "nonadek", "ikos" };
         public static string[] counters = new string[] { "", "", "di", "tri", "tetra", "penta", "hexa", "hepta", "okta", "nona", "deka"};
+        public static string[] complexCounters = new string[] {
+            "",
+            "",
+            "bis",
+            "tris",
+            "tetrakis",
+            "pentakis",
+            "hexakis",
+            "heptakis",
+            "octakis",
+            "enneakis",
+            "decakis",
+            "undecakis",
+            "dodecakis",
+            "tridecakis",
+            "tetradekakis",
+            "pentadekakis",
+            "hexadekakis",
+            "heptadekakis",
+            "octadekakis",
+            "nonadekakis",
+            "icosakis"
+        };
         public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "iod" };
 
 

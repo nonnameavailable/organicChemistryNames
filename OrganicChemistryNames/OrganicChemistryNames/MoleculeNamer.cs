@@ -20,12 +20,15 @@ namespace OrganicChemistryNames
         protected Element startCarbon;
         protected int depth;
         protected int carbonConnection;
+        private bool hasHalogen;
 
         public int CarbonChainConnection { get => carbonConnection; set => carbonConnection = value; }
+        protected bool HasHalogen { get => hasHalogen; set => hasHalogen = value; }
         public MoleculeNamer(int[][] grid, int depth)
         {
             this.grid = grid;
             this.depth = depth;
+            hasHalogen = false;
         }
         public MoleculeNamer(int[][] grid, int depth, Element startCarbon, int carbonConnection)
         {
@@ -33,6 +36,7 @@ namespace OrganicChemistryNames
             this.depth = depth;
             this.startCarbon = startCarbon;
             this.carbonConnection = carbonConnection;
+            hasHalogen = false;
         }
 
         public void setMoleculeName(Form1 form)
@@ -69,6 +73,7 @@ namespace OrganicChemistryNames
             }
 
         }
+
         private List<TypedString> ylGroupsNamePart()
         {
             List<TypedString> result = new List<TypedString>();
@@ -80,13 +85,24 @@ namespace OrganicChemistryNames
                     MoleculeNamer mn = new MoleculeNamer(NH.gridWithoutList(grid, longestCC), depth + 1, e, e.CarbonChainConnection);
                     ylGroups.AddToList(mn.MoleculeNameSimpleString, mn);
                 }
-                int counter = 0;
+                int cntr = 0;
                 foreach (KeyValuePair<string, List<MoleculeNamer>> kvp in ylGroups)
                 {
-                    string startHyphen = counter == 0 ? "" : "-";
-                    result.Add(new TypedString(startHyphen + IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count], Element.C));
+                    List<TypedString> moleculeNameTypedList = kvp.Value[0].MoleculeNameTypedList;
+                    string moleculeNameString = kvp.Key;
+                    string startHyphen = cntr == 0 ? "" : "-";
+                    bool isComplex = kvp.Value[0].HasHalogen || int.TryParse(moleculeNameString.Substring(0, 1), out _);
+                    string leftPar = isComplex ? "(" : "";
+                    string rightpar = isComplex ? ")" : "";
+                    string counter = isComplex ? Element.complexCounters[kvp.Value.Count] : Element.counters[kvp.Value.Count];
+                    string positions = IP.listToString(kvp.Value, ",");
+
+                    string final = startHyphen + positions + "-" + counter + leftPar;
+
+                    result.Add(new TypedString(final, Element.C));
                     result = result.Concat(kvp.Value[0].MoleculeNameTypedList).ToList();
-                    counter++;
+                    result.Add(new TypedString(rightpar, Element.C));
+                    cntr++;
                 }
             }
             return result;
@@ -94,7 +110,6 @@ namespace OrganicChemistryNames
         private List<TypedString> halogensNamePart()
         {
             List<TypedString> result = new List<TypedString>();
-            extrasPositions.TryGetValue(Element.C, out List<Element> ylgroups);
             foreach (int i in halogenOrderList)
             {
                 extrasPositions.TryGetValue(i, out List<Element> positions);
@@ -107,6 +122,7 @@ namespace OrganicChemistryNames
             }
             if(result.Count > 0)
             {
+                hasHalogen = true;
                 TypedString lastTS = result[result.Count - 1];
                 lastTS.Text = lastTS.Text.Substring(0, lastTS.Text.Length - 1);
                 result[result.Count - 1] = lastTS;
