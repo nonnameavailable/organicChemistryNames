@@ -30,9 +30,24 @@ namespace OrganicChemistryNames
             }
 
         }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Delete)
+            {
+                grid.clearGrid();
+            } else if(keyData == Keys.P)
+            {
+                grid.PracticeGenerator.generatePractice();
+            }
+            repaint();
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
         public void repaint()
         {
+            NameRTB.Text = "";
+            MoleculeNamer mn = new MoleculeNamer(grid.Grid, 0);
+            mn.setMoleculeName(this);
             mainPictureBox.Image = grid.renderedGrid();
         }
 
@@ -56,9 +71,6 @@ namespace OrganicChemistryNames
             {
                 //do nothing
             }
-            NameRTB.Text = "";
-            MoleculeNamer mn = new MoleculeNamer(grid.Grid, 0);
-            mn.setMoleculeName(this);
             repaint();
         }
 

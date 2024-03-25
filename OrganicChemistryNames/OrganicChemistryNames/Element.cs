@@ -79,7 +79,7 @@ namespace OrganicChemistryNames
             "nonadekakis",
             "icosakis"
         };
-        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "iod" };
+        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "jod" };
 
 
         private int type;

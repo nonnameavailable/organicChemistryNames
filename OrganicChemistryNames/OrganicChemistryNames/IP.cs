@@ -130,6 +130,7 @@ namespace OrganicChemistryNames
 			for (int i = elementList.Count - 1; i >= 0; i--)
 			{
 				Element nC = new Element(elementList[i].X, elementList[i].Y, elementList[i].Type);
+				nC.CarbonChainConnection = elementList[i].CarbonChainConnection;
 				result.Add(nC);
 			}
 			return result;

@@ -15,12 +15,14 @@ namespace OrganicChemistryNames
         private int width;
         private int height;
         private int sqSize;
-        Form1 parentForm;
+        private Form1 parentForm;
+        private PracticeGenerator practiceGenerator;
 
         public int SqSize { get => sqSize; }
         public int Width { get => width; }
         public int Height { get => height; }
         public int[][] Grid { get => grid; }
+        internal PracticeGenerator PracticeGenerator { get => practiceGenerator; set => practiceGenerator = value; }
 
         public ChemistryGrid(int width, int height, int sqSize, Form1 parentForm)
         {
@@ -29,6 +31,7 @@ namespace OrganicChemistryNames
             this.width = width;
             this.height = height;
             this.parentForm = parentForm;
+            practiceGenerator = new PracticeGenerator(this);
         }
         private int[][] newGrid(int width, int height)
         {
@@ -208,7 +211,11 @@ namespace OrganicChemistryNames
                 }
             }
             return true;
+        }
 
+        public void clearGrid()
+        {
+            grid = newGrid(width, height);
         }
     }
 }
