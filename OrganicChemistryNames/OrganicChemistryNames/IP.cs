@@ -111,6 +111,29 @@ namespace OrganicChemistryNames
 			}
 			return result;
 		}
+
+		public static List<Element> elementListCopy(List<Element> elementList)
+        {
+			List<Element> result = new List<Element>();
+			foreach(Element e in elementList)
+            {
+				Element ne = new Element(e.X, e.Y, e.Type);
+				ne.CarbonChainConnection = e.CarbonChainConnection;
+				result.Add(ne);
+            }
+			return result;
+        }
+
+		public static List<Element> invertedElementList(List<Element> elementList)
+        {
+			List<Element> result = new List<Element>();
+			for (int i = elementList.Count - 1; i >= 0; i--)
+			{
+				Element nC = new Element(elementList[i].X, elementList[i].Y, elementList[i].Type);
+				result.Add(nC);
+			}
+			return result;
+		}
 		public static void Increment<T>(this Dictionary<T, int> dictionary, T key)
 		{
 			int count;
@@ -166,6 +189,7 @@ namespace OrganicChemistryNames
 		public static string listToString(List<Element> list, string separator)
 		{
 			string result = "";
+			if (list.Count == 0) return result;
 			foreach (Element e in list)
 			{
 				result += e.CarbonChainConnection.ToString() + separator;

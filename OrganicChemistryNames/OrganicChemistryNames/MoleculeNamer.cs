@@ -65,13 +65,14 @@ namespace OrganicChemistryNames
             get
             {
                 update();
+                //MessageBox.Show(IP.listToString(longestCC, ",") + " x " + IP.listToString(lccBonds, ","));
+                //MessageBox.Show(IP.listToString(longestCC, ",") + " x " + IP.listToString(lccBonds, ","));
                 List<TypedString> result = halogensNamePart();
                 result = result.Concat(ylGroupsNamePart()).ToList();
                 result.Add(new TypedString(Element.carbonStems[longestCC.Count], Element.C));
                 result = result.Concat(bondsNamePart()).ToList();
                 return result;
             }
-
         }
 
         private List<TypedString> ylGroupsNamePart()
@@ -181,15 +182,17 @@ namespace OrganicChemistryNames
         }
         private void update()
         {
-            if(depth == 0)
+            if (depth == 0)
             {
                 longestCC = NH.longestCarbonChain(grid);
-            } else
+            }
+            else
             {
                 longestCC = NH.longestCarbonChain(grid, startCarbon);
             }
-            
+
             lccBonds = NH.longestCCBonds(longestCC, grid);
+
 
             extrasPositions = new Dictionary<int, List<Element>>();
             bondsPositions = new Dictionary<int, List<Element>>();

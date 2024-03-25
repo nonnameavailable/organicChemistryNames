@@ -22,6 +22,41 @@ namespace OrganicChemistryNames
             {
                 if (sw.LongestPath.Count > result.Count) result = sw.LongestPath;
             }
+            int lccScore = longestCarbonChainScore(result, grid);
+            List<Element> backup = IP.elementListCopy(result);
+            result = IP.invertedElementList(result);
+            int newLccScore = longestCarbonChainScore(result, grid);
+            if (newLccScore >= lccScore)
+            {
+                result = backup;
+            }
+            return result;
+        }
+
+        private static int longestCarbonChainScore(List<Element> longestCC, int[][] grid)
+        {
+            int result = 0;
+            List<Element> lccBonds = longestCCBonds(longestCC, grid);
+            for (int i = 0; i < longestCC.Count; i++)
+            {
+                Element cc = longestCC[i];
+                List<Element> neighbors = cc.neighboringElements(grid, Element.ALL);
+                foreach (Element ne in neighbors)
+                {
+                    if (!ne.isInList(longestCC))
+                    {
+                        result += i;
+                        break;
+                    }
+                }
+            }
+            foreach (Element e in lccBonds)
+            {
+                if (e.Type == Element.DOUBLE_BOND || e.Type == Element.TRIPLE_BOND)
+                {
+                    result += (lccBonds.IndexOf(e) + 1) * 100;
+                }
+            }
             return result;
         }
 
