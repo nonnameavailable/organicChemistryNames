@@ -23,6 +23,7 @@ namespace OrganicChemistryNames
         public int Height { get => height; }
         public int[][] Grid { get => grid; }
         internal PracticeGenerator PracticeGenerator { get => practiceGenerator; set => practiceGenerator = value; }
+        public Form1 ParentForm { get => parentForm; set => parentForm = value; }
 
         public ChemistryGrid(int width, int height, int sqSize, Form1 parentForm)
         {

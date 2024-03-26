@@ -28,6 +28,15 @@ namespace OrganicChemistryNames
             {
                 Color = colorDialog1.Color;
                 ((Form1)FindForm()).repaint();
+                try
+                {
+                    ((ElementButton)Parent).repaint();
+                }
+                catch (InvalidCastException)
+                {
+                    // do nothing
+                }
+                
             }
         }
         public Color Color { get => button.BackColor; set => button.BackColor = value; }

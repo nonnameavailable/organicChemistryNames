@@ -19,23 +19,25 @@ namespace OrganicChemistryNames
             InitializeComponent();
 
             this.type = type;
-            resizeFont();
             this.Resize += ElementButton_Resize;
             backCB.Color = Element.backgroundColorMap[type];
             fontCB.Color = Element.fontColorMap[type];
+            repaint();
         }
 
         private void ElementButton_Resize(object sender, EventArgs e)
         {
-            resizeFont();
+            repaint();
         }
 
-        private void resizeFont()
+        public void repaint()
         {
             string elemText = Element.characterMap[type];
             Font selectButtonFont = IP.fontToFitRectSmaller(elemText, Width, Height, "Arial");
             SelectButton.Font = selectButtonFont;
             SelectButton.Text = elemText;
+            SelectButton.BackColor = backCB.Color;
+            SelectButton.ForeColor = fontCB.Color;
         }
 
         public int Type { get => type; set => type = value; }

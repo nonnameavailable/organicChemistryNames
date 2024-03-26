@@ -12,7 +12,7 @@ namespace OrganicChemistryNames
 	static class IP
 	{
 
-		public static double clamp(double value, double min, double max)
+		public static int clamp(int value, int min, int max)
 		{
 			return (value < min) ? min : (value > max) ? max : value;
 		}

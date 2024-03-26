@@ -28,7 +28,8 @@ namespace OrganicChemistryNames
                 if (i == Element.C) eb.IsPainting = true;
                 elementFLP.Controls.Add(eb);
             }
-
+            Width = 1200;
+            Height = 900;
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -136,5 +137,34 @@ namespace OrganicChemistryNames
         }
 
         public Color IndexColor { get => indexCB.Color; }
+        public List<int> PracticeLimits
+        {
+            get
+            {
+                List<int> result = new List<int>();
+                result.Add((int)minLCCNud.Value);
+                result.Add((int)maxLCCNud.Value);
+                result.Add((int)minSubNud.Value);
+                result.Add((int)maxSubNud.Value);
+                result.Add((int)startXNud.Value);
+                result.Add((int)startYNud.Value);
+                result.Add((int)subChanceNud.Value);
+                result.Add((int)bondChanceNud.Value);
+                return result;
+            }
+        }
+        public List<bool> PracticeCBParams
+        {
+            get
+            {
+                List<bool> result = new List<bool>();
+                result.Add(includeCarbonCB.Checked);
+                result.Add(includeHalogensCB.Checked);
+                result.Add(includeBondsCB.Checked);
+                return result;
+            }
+        }
     }
+
+
 }

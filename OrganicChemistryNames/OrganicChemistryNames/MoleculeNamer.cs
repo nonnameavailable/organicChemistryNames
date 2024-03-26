@@ -41,9 +41,11 @@ namespace OrganicChemistryNames
 
         public void setMoleculeName(Form1 form)
         {
+            List<Color> bgColors = form.BgColorList;
+            List<Color> fontColors = form.FontColorList;
             foreach(TypedString ts in MoleculeNameTypedList)
             {
-                form.AppendNameRTB(ts.Text, new Font("Arial", 24), Element.fontColorMap[ts.Type], Element.backgroundColorMap[ts.Type]);
+                form.AppendNameRTB(ts.Text, new Font("Arial", 24), fontColors[ts.Type], bgColors[ts.Type]);
             }
         }
 
@@ -156,7 +158,7 @@ namespace OrganicChemistryNames
                     string yl = depth > 0 ? "yl" : "";
                     string name = Element.counters[positions.Count] + Element.elementNames[kvp.Key] + yl + ideneEdene();
                     bool includePositions = longestCC.Count > 2;
-                    result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, Element.C));
+                    result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, kvp.Key));
                 }
             }
             return result;
