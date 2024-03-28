@@ -21,10 +21,11 @@ namespace OrganicChemistryNames
         public const int F = 7;
         public const int Br = 8;
         public const int I = 9;
+        public const int O = 10;
         public const int ALL = -2;
 
-        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I" };
-        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 1 };
+        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I", "O" };
+        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 1, 2 };
 
         public static Color[] fontColorMap = new Color[]
         {
@@ -37,7 +38,8 @@ namespace OrganicChemistryNames
             Color.Black, // chlorine
             Color.Black, // fluor
             Color.White, // bromine
-            Color.White // iodine
+            Color.White, // iodine
+            Color.Black
         };
         public static Color[] backgroundColorMap = new Color[]
         {
@@ -50,7 +52,8 @@ namespace OrganicChemistryNames
             Color.PaleGreen, // chlorine
             Color.LightYellow, // fluor
             Color.DarkRed, // bromine
-            Color.DarkViolet // iodine
+            Color.DarkViolet, // iodine
+            Color.LightBlue
         };
 
         public static string[] carbonStems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
@@ -80,26 +83,20 @@ namespace OrganicChemistryNames
             "nonadekakis",
             "icosakis"
         };
-        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "jod" };
-
-
-        private int type;
-        private int x;
-        private int y;
-        private int carbonChainConnection;
+        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "jod", "oxygen_lol" };
 
         public Element(int x, int y, int type)
         {
-            this.type = type;
-            this.x = x;
-            this.y = y;
-            carbonChainConnection = -1;
+            Type = type;
+            X = x;
+            Y = y;
+            CarbonChainConnection = -1;
         }
 
-        public int Type { get => type; set => type = value; }
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
-        public int CarbonChainConnection { get => carbonChainConnection; set => carbonChainConnection = value; }
+        public int Type { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int CarbonChainConnection { get; set; }
 
         public void draw(Graphics g, int sqSize, bool isRotated, Color backgroundColor, Color textColor, Color gridColor)
         {
@@ -107,11 +104,11 @@ namespace OrganicChemistryNames
             Graphics mg = Graphics.FromImage(miniImage);
             if (isRotated) mg.RotateTransform(90);
 
-            string txt = characterMap[type];
+            string txt = characterMap[Type];
             Font textFont = IP.fontToFitRect(txt, sqSize, sqSize, "Arial");
 
-            int xc = x * sqSize;
-            int yc = y * sqSize;
+            int xc = X * sqSize;
+            int yc = Y * sqSize;
 
             int ox = 0;
             int oy = isRotated ? -sqSize : 0;
@@ -135,7 +132,7 @@ namespace OrganicChemistryNames
             mg.DrawString(indexText, new Font("Arial", (float)(sqSize * 0.2), FontStyle.Bold), new SolidBrush(fontColor), 0, 0);
 
             mg.Dispose();
-            g.DrawImage(miniImage, x * sqSize, y * sqSize);
+            g.DrawImage(miniImage, X * sqSize, Y * sqSize);
             miniImage.Dispose();
         }
 
@@ -157,54 +154,79 @@ namespace OrganicChemistryNames
             List<Element> result = new List<Element>();
             int maxX = grid[0].Length - 1;
             int maxY = grid.Length - 1;
-            if (x + 2 < maxX && (grid[y][x + 2] == type || type == Element.ALL) && grid[y][x + 1] > 0)
+            if (X + 2 < maxX && (grid[Y][X + 2] == type || type == Element.ALL) && grid[Y][X + 1] > 0)
             {
-                result.Add(new Element(x + 2, y, grid[y][x + 2]));
+                result.Add(new Element(X + 2, Y, grid[Y][X + 2]));
             }
-            if (y - 2 > 0 && (grid[y - 2][x] == type || type == Element.ALL) && grid[y - 1][x] > 0)
+            if (Y - 2 > 0 && (grid[Y - 2][X] == type || type == Element.ALL) && grid[Y - 1][X] > 0)
             {
-                result.Add(new Element(x, y - 2, grid[y - 2][x]));
+                result.Add(new Element(X, Y - 2, grid[Y - 2][X]));
             }
-            if (y + 2 < maxY && (grid[y + 2][x] == type || type == Element.ALL) && grid[y + 1][x] > 0)
+            if (Y + 2 < maxY && (grid[Y + 2][X] == type || type == Element.ALL) && grid[Y + 1][X] > 0)
             {
-                result.Add(new Element(x, y + 2, grid[y + 2][x]));
+                result.Add(new Element(X, Y + 2, grid[Y + 2][X]));
             }
-            if (x - 2 > 0 && (grid[y][x - 2] == type || type == Element.ALL) && grid[y][x - 1] > 0)
+            if (X - 2 > 0 && (grid[Y][X - 2] == type || type == Element.ALL) && grid[Y][X - 1] > 0)
             {
-                result.Add(new Element(x - 2, y, grid[y][x - 2]));
+                result.Add(new Element(X - 2, Y, grid[Y][X - 2]));
             }
             return result;
         }
         public List<Element> neighboringBonds(int[][] grid)
         {
             List<Element> result = new List<Element>();
-            int maxX = grid[0].Length - 1;
-            int maxY = grid.Length - 1;
-            if (grid[y][x + 1] > 0 && grid[y][x + 1] <= 3)
+            if (grid[Y][X + 1] > 0 && grid[Y][X + 1] <= 3)
             {
-                result.Add(new Element(x + 1, y, grid[y][x + 1]));
+                result.Add(new Element(X + 1, Y, grid[Y][X + 1]));
             }
-            if (grid[y - 1][x] > 0 && grid[y - 1][x] <= 3)
+            if (grid[Y - 1][X] > 0 && grid[Y - 1][X] <= 3)
             {
-                result.Add(new Element(x, y - 1, grid[y - 1][x]));
+                result.Add(new Element(X, Y - 1, grid[Y - 1][X]));
             }
-            if (grid[y + 1][x] > 0 && grid[y + 1][x] <= 3)
+            if (grid[Y + 1][X] > 0 && grid[Y + 1][X] <= 3)
             {
-                result.Add(new Element(x, y + 1, grid[y + 1][x]));
+                result.Add(new Element(X, Y + 1, grid[Y + 1][X]));
             }
-            if (grid[y][x - 1] > 0 && grid[y][x - 1] <= 3)
+            if (grid[Y][X - 1] > 0 && grid[Y][X - 1] <= 3)
             {
-                result.Add(new Element(x - 1, y, grid[y][x - 1]));
+                result.Add(new Element(X - 1, Y, grid[Y][X - 1]));
             }
             return result;
         }
 
+        public bool hasDoubleBond(int [][] grid)
+        {
+            foreach(Element e in neighboringBonds(grid))
+            {
+                if(e.Type == Element.DOUBLE_BOND)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public Element bondBetween(Element e, int[][] grid)
         {
-            int xC = (e.X - x) / 2 + x;
-            int yC = (e.Y - y) / 2 + y;
+            int xC = (e.X - X) / 2 + X;
+            int yC = (e.Y - Y) / 2 + Y;
             Element result = new Element(xC, yC, grid[yC][xC]);
             return result;
+        }
+
+        public bool isAlcohol(int[][] grid)
+        {
+            return Type == Element.O && !hasDoubleBond(grid);
+        }
+
+        public bool isAldehyde(int[][] grid)
+        {
+            return Type == Element.O && hasDoubleBond(grid) && neighboringElements(grid, Element.ALL).Count == 1;
+        }
+
+        public bool isKetone(int[][] grid)
+        {
+            return Type == Element.O && hasDoubleBond(grid) && neighboringElements(grid, Element.ALL).Count == 2;
         }
     }
 }

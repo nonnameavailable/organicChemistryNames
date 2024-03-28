@@ -161,6 +161,7 @@ namespace OrganicChemistryNames
                     result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, kvp.Key));
                 }
             }
+            result.Add(ol());
             return result;
         }
         private string ideneEdene()
@@ -186,6 +187,24 @@ namespace OrganicChemistryNames
                 }
             }
             return result;
+        }
+
+        private TypedString ol()
+        {
+            extrasPositions.TryGetValue(Element.O, out List<Element> positionss);
+            if (positionss == null || positionss.Count == 0) return new TypedString("", Element.O);
+            List<Element> positions = new List<Element>();
+            foreach(Element e in positionss)
+            {
+                if (e.isAlcohol(grid))
+                {
+                    positions.Add(e);
+                }
+            }
+
+            bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
+            string pos = (hidePositions ? "" : ("-" + IP.listToString(positions, ",") + "-")) + Element.counters[positions.Count];
+            return new TypedString( pos + "ol", Element.O);
         }
         private void update()
         {

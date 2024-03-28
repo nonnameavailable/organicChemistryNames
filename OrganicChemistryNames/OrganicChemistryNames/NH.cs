@@ -116,5 +116,24 @@ namespace OrganicChemistryNames
             }
             return result;
         }
+
+        public static int elemCount(List<Element> list, int type)
+        {
+            int result = 0;
+            foreach(Element e in list)
+            {
+                if (e.Type == type) result++;
+            }
+            return result;
+        }
+        public static int nonCarbonElemCount(List<Element> list)
+        {
+            int result = 0;
+            foreach (Element e in list)
+            {
+                if (e.Type != Element.C) result++;
+            }
+            return result;
+        }
     }
 }
