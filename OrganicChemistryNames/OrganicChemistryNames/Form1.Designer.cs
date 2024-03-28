@@ -326,6 +326,11 @@ namespace OrganicChemistryNames
             // maxSubNud
             // 
             this.maxSubNud.Location = new System.Drawing.Point(55, 92);
+            this.maxSubNud.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             this.maxSubNud.Name = "maxSubNud";
             this.maxSubNud.Size = new System.Drawing.Size(75, 20);
             this.maxSubNud.TabIndex = 7;
@@ -335,6 +340,7 @@ namespace OrganicChemistryNames
             0,
             0,
             0});
+            this.maxSubNud.ValueChanged += new System.EventHandler(this.maxSubNud_ValueChanged);
             // 
             // label4
             // 
@@ -348,6 +354,11 @@ namespace OrganicChemistryNames
             // minSubNud
             // 
             this.minSubNud.Location = new System.Drawing.Point(55, 66);
+            this.minSubNud.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             this.minSubNud.Name = "minSubNud";
             this.minSubNud.Size = new System.Drawing.Size(75, 20);
             this.minSubNud.TabIndex = 5;
@@ -357,6 +368,7 @@ namespace OrganicChemistryNames
             0,
             0,
             0});
+            this.minSubNud.ValueChanged += new System.EventHandler(this.minSubNud_ValueChanged);
             // 
             // label3
             // 
@@ -370,6 +382,11 @@ namespace OrganicChemistryNames
             // maxLCCNud
             // 
             this.maxLCCNud.Location = new System.Drawing.Point(55, 40);
+            this.maxLCCNud.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             this.maxLCCNud.Name = "maxLCCNud";
             this.maxLCCNud.Size = new System.Drawing.Size(75, 20);
             this.maxLCCNud.TabIndex = 3;
@@ -379,6 +396,7 @@ namespace OrganicChemistryNames
             0,
             0,
             0});
+            this.maxLCCNud.ValueChanged += new System.EventHandler(this.maxLCCNud_ValueChanged);
             // 
             // label2
             // 
@@ -392,6 +410,11 @@ namespace OrganicChemistryNames
             // minLCCNud
             // 
             this.minLCCNud.Location = new System.Drawing.Point(55, 14);
+            this.minLCCNud.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             this.minLCCNud.Name = "minLCCNud";
             this.minLCCNud.Size = new System.Drawing.Size(75, 20);
             this.minLCCNud.TabIndex = 1;
@@ -401,6 +424,7 @@ namespace OrganicChemistryNames
             0,
             0,
             0});
+            this.minLCCNud.ValueChanged += new System.EventHandler(this.minLCCNud_ValueChanged);
             // 
             // label1
             // 

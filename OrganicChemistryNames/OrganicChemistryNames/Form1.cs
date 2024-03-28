@@ -168,12 +168,32 @@ namespace OrganicChemistryNames
         public int PracticeStartX { get => (int)startXNud.Value; set => startXNud.Value = value; }
         public int PracticeStartY { get => (int)startYNud.Value; set => startYNud.Value = value; }
         public int PracticeSubChance { get => (int)subChanceNud.Value; set => subChanceNud.Value = value; }
-        public int PracticeBondChance { get => (int)subChanceNud.Value; set => subChanceNud.Value = value; }
+        public int PracticeBondChance { get => (int)bondChanceNud.Value; set => bondChanceNud.Value = value; }
         public int PracticeCarbonCount { get => (int)carbonCountNud.Value; set => carbonCountNud.Value = value; }
         public bool PracticeIncludeBonds { get => includeBondsCB.Checked; set => includeBondsCB.Checked = value; }
         public bool PracticeIncludeCarbons { get => includeCarbonCB.Checked; set => includeCarbonCB.Checked = value; }
         public bool PracticeIncludeHalogens { get => includeHalogensCB.Checked; set => includeHalogensCB.Checked = value; }
         public bool IsInPracticeMode { get; set; }
+
+        private void minLCCNud_ValueChanged(object sender, EventArgs e)
+        {
+            if (minLCCNud.Value > maxLCCNud.Value) minLCCNud.Value = maxLCCNud.Value;
+        }
+
+        private void maxLCCNud_ValueChanged(object sender, EventArgs e)
+        {
+            if (maxLCCNud.Value < minLCCNud.Value) maxLCCNud.Value = minLCCNud.Value;
+        }
+
+        private void minSubNud_ValueChanged(object sender, EventArgs e)
+        {
+            if (minSubNud.Value > maxSubNud.Value) minSubNud.Value = maxSubNud.Value;
+        }
+
+        private void maxSubNud_ValueChanged(object sender, EventArgs e)
+        {
+            if (maxSubNud.Value < minSubNud.Value) maxSubNud.Value = minSubNud.Value;
+        }
     }
 
 

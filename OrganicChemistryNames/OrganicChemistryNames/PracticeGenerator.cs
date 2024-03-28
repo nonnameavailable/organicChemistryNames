@@ -27,7 +27,7 @@ namespace OrganicChemistryNames
             int minMainChainLength = f.PracticeMinLCC;
             int maxMainChainLength = f.PracticeMaxLCC;
             int minSubLength = f.PracticeMinSubLength;
-            int maxSubLength = f.PracticeMaxSubLength;
+            int maxSubLength = f.PracticeMaxSubLength + 1;
             int startX = f.PracticeStartX;
             int startY = f.PracticeStartY;
             int subChance = f.PracticeSubChance;
