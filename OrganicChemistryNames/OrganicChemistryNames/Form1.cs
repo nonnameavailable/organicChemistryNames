@@ -15,10 +15,12 @@ namespace OrganicChemistryNames
     {
         private Bitmap canvas;
         private ChemistryGrid grid;
+        private PracticeGenerator pg;
         public Form1()
         {
             InitializeComponent();
-            grid = new ChemistryGrid(30, 20, 50, this);
+            grid = new ChemistryGrid(40, 40, 40, this);
+            pg = new PracticeGenerator(grid);
             canvas = grid.renderedGrid();
             mainPictureBox.Image = canvas;
 
@@ -36,9 +38,21 @@ namespace OrganicChemistryNames
             if (keyData == Keys.Delete)
             {
                 grid.clearGrid();
-            } else if(keyData == Keys.P)
+            } else if (keyData == Keys.P)
             {
-                grid.PracticeGenerator.generatePractice();
+                IsInPracticeMode = !IsInPracticeMode;
+            } else if(keyData == Keys.N)
+            {
+                if (IsInPracticeMode)
+                {
+                    pg.generatePractice();
+                    grid.clearGrid();
+                }
+            } else if(keyData == Keys.U)
+            {
+                int[][] backup = IP.arrCopy(pg.ChemistryGrid.Grid);
+                pg.ChemistryGrid.Grid = grid.Grid;
+                grid.Grid = backup;
             }
             repaint();
             return base.ProcessCmdKey(ref msg, keyData);
@@ -47,6 +61,12 @@ namespace OrganicChemistryNames
         public void repaint()
         {
             NameRTB.Text = "";
+            if (IsInPracticeMode)
+            {
+                MoleculeNamer pmn = new MoleculeNamer(pg.ChemistryGrid.Grid, 0);
+                pmn.setMoleculeName(this);
+                AppendNameRTB(Environment.NewLine);
+            }
             MoleculeNamer mn = new MoleculeNamer(grid.Grid, 0);
             mn.setMoleculeName(this);
             mainPictureBox.Image = grid.renderedGrid();
@@ -108,14 +128,18 @@ namespace OrganicChemistryNames
             // only required for multi line text to scroll to the end
             box.ScrollToCaret();
         }
+        public void AppendNameRTB(string text)
+        {
+            NameRTB.AppendText(text);
+        }
 
         public List<Color> BgColorList
-        { 
+        {
             get
             {
                 List<Color> result = new List<Color>();
                 result.Add(emptyCB.Color);
-                foreach(ElementButton eb in elementFLP.Controls)
+                foreach (ElementButton eb in elementFLP.Controls)
                 {
                     result.Add(eb.BgColor);
                 }
@@ -137,33 +161,19 @@ namespace OrganicChemistryNames
         }
 
         public Color IndexColor { get => indexCB.Color; }
-        public List<int> PracticeLimits
-        {
-            get
-            {
-                List<int> result = new List<int>();
-                result.Add((int)minLCCNud.Value);
-                result.Add((int)maxLCCNud.Value);
-                result.Add((int)minSubNud.Value);
-                result.Add((int)maxSubNud.Value);
-                result.Add((int)startXNud.Value);
-                result.Add((int)startYNud.Value);
-                result.Add((int)subChanceNud.Value);
-                result.Add((int)bondChanceNud.Value);
-                return result;
-            }
-        }
-        public List<bool> PracticeCBParams
-        {
-            get
-            {
-                List<bool> result = new List<bool>();
-                result.Add(includeCarbonCB.Checked);
-                result.Add(includeHalogensCB.Checked);
-                result.Add(includeBondsCB.Checked);
-                return result;
-            }
-        }
+        public int PracticeMinLCC { get => (int)minLCCNud.Value; set => minLCCNud.Value = value; }
+        public int PracticeMaxLCC { get => (int)maxLCCNud.Value; set => maxLCCNud.Value = value; }
+        public int PracticeMinSubLength { get => (int)minSubNud.Value; set => minSubNud.Value = value; }
+        public int PracticeMaxSubLength { get => (int)maxSubNud.Value; set => maxSubNud.Value = value; }
+        public int PracticeStartX { get => (int)startXNud.Value; set => startXNud.Value = value; }
+        public int PracticeStartY { get => (int)startYNud.Value; set => startYNud.Value = value; }
+        public int PracticeSubChance { get => (int)subChanceNud.Value; set => subChanceNud.Value = value; }
+        public int PracticeBondChance { get => (int)subChanceNud.Value; set => subChanceNud.Value = value; }
+        public int PracticeCarbonCount { get => (int)carbonCountNud.Value; set => carbonCountNud.Value = value; }
+        public bool PracticeIncludeBonds { get => includeBondsCB.Checked; set => includeBondsCB.Checked = value; }
+        public bool PracticeIncludeCarbons { get => includeCarbonCB.Checked; set => includeCarbonCB.Checked = value; }
+        public bool PracticeIncludeHalogens { get => includeHalogensCB.Checked; set => includeHalogensCB.Checked = value; }
+        public bool IsInPracticeMode { get; set; }
     }
 
 

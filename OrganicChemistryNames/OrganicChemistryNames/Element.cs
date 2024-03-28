@@ -42,9 +42,9 @@ namespace OrganicChemistryNames
         public static Color[] backgroundColorMap = new Color[]
         {
             Color.White, // empty
-            Color.White, // single bond
-            Color.White, // double bond
-            Color.White, // triple bond
+            Color.LightGray, // single bond
+            Color.LightBlue, // double bond
+            Color.Crimson, // triple bond
             Color.Black, // carbon
             Color.White, // hydrogen
             Color.PaleGreen, // chlorine
