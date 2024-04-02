@@ -219,14 +219,25 @@ namespace OrganicChemistryNames
             return Type == Element.O && !hasDoubleBond(grid);
         }
 
-        public bool isAldehyde(int[][] grid)
+        public bool isAldehydeCarbon(int[][] grid)
         {
-            return Type == Element.O && hasDoubleBond(grid) && neighboringElements(grid, Element.ALL).Count == 1;
+            List<Element> nC = neighboringElements(grid, Element.C);
+            List<Element> nO = neighboringElements(grid, Element.O);
+            return Type == Element.C && nC.Count <= 1 && nO.Count == 1 && nO[0].hasDoubleBond(grid);
+        }
+
+        public bool isAldehydeOxygen(int[][] grid)
+        {
+            List<Element> neighbors = neighboringElements(grid, Element.C);
+            if (neighbors.Count == 0) return false;
+            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count == 1;
         }
 
         public bool isKetone(int[][] grid)
         {
-            return Type == Element.O && hasDoubleBond(grid) && neighboringElements(grid, Element.ALL).Count == 2;
+            List<Element> neighbors = neighboringElements(grid, Element.C);
+            if (neighbors.Count == 0) return false;
+            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count == 2;
         }
     }
 }

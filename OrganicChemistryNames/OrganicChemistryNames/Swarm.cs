@@ -8,8 +8,6 @@ namespace OrganicChemistryNames
 {
     class Swarm
     {
-        private int originX;
-        private int originY;
         private int[][] grid;
         private List<Crawler> children;
         private List<Element> lp;
@@ -40,6 +38,13 @@ namespace OrganicChemistryNames
                     {
                         if (c.Path.Count > result.Count) result = c.Path;
                     }
+                }
+            }
+            foreach(Crawler c in children)
+            {
+                if (c.Path.Last().isAldehydeCarbon(grid))
+                {
+                    return c.Path;
                 }
             }
             return result;

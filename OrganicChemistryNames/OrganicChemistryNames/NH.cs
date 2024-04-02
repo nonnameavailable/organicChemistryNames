@@ -11,7 +11,17 @@ namespace OrganicChemistryNames
         public static List<Element> longestCarbonChain(int[][] grid)
         {
             List<Swarm> swarms = new List<Swarm>();
-            foreach (Element ec in endCarbons(grid))
+            List<Element> eCList = endCarbons(grid);
+
+            foreach(Element ec in eCList)
+            {
+                if (ec.isAldehydeCarbon(grid))
+                {
+                    return longestCarbonChain(grid, ec);
+                }
+            }
+
+            foreach (Element ec in eCList)
             {
                 swarms.Add(new Swarm(ec.X, ec.Y, grid));
             }

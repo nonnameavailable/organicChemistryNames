@@ -21,6 +21,11 @@ namespace OrganicChemistryNames
         protected int depth;
         protected int carbonConnection;
         private bool hasHalogen;
+        private bool hasAlcohol;
+        private bool hasAldehyde;
+        private bool hasKetone;
+        private bool hasHydroxyGroup;
+        private bool hasOxoGroup;
 
         public int CarbonChainConnection { get => carbonConnection; set => carbonConnection = value; }
         protected bool HasHalogen { get => hasHalogen; set => hasHalogen = value; }
@@ -81,6 +86,7 @@ namespace OrganicChemistryNames
 
                 List<TypedString> result = new List<TypedString>();
                 result = result.Concat(halogens).ToList();
+                result = result.Concat(hydroxyOxyNamePart()).ToList();
                 result = result.Concat(ylGroups).ToList();
                 result.Add(stem);
                 result = result.Concat(bonds).ToList();
@@ -139,6 +145,38 @@ namespace OrganicChemistryNames
             return result;
         }
 
+        private List<TypedString> hydroxyOxyNamePart()
+        {
+            List<TypedString> result = new List<TypedString>();
+            
+            if (!(hasOxoGroup || hasHydroxyGroup)) return result;
+
+            Dictionary<string, List<Element>> groups = new Dictionary<string, List<Element>>();
+            extrasPositions.TryGetValue(Element.O, out List<Element> positions);
+            foreach(Element o in positions)
+            {
+                if(hasHydroxyGroup && o.isAlcohol(grid))
+                {
+                    groups.AddToList("hydroxy", o);
+                }
+                if(hasOxoGroup && o.isKetone(grid))
+                {
+                    groups.AddToList("oxo", o);
+                }
+            }
+            foreach(KeyValuePair<string, List<Element>> kvp in groups)
+            {
+                TypedString oxoHydroxy = new TypedString(IP.listToString(kvp.Value, ",") + "-" + Element.counters[kvp.Value.Count] + kvp.Key + "-", Element.O);
+                result.Add(oxoHydroxy);
+            }
+            if(result.Count > 0)
+            {
+                result[result.Count - 1] = new TypedString(result[result.Count - 1].Text.Remove(result[result.Count - 1].Text.Length - 1), Element.O);
+            }
+            return result;
+        }
+
+
         private List<TypedString> bondsNamePart()
         {
             string ending = depth == 0 ? "an" : "yl" + ideneEdene();
@@ -161,7 +199,9 @@ namespace OrganicChemistryNames
                     result.Add(new TypedString((includePositions ?  ("-" + IP.listToString(positions, ",") + "-") : "") + name, kvp.Key));
                 }
             }
-            result.Add(ol());
+            if(!hasHydroxyGroup) result.Add(ol());
+            result.Add(al());
+            if(!hasOxoGroup) result.Add(on());
             return result;
         }
         private string ideneEdene()
@@ -201,10 +241,42 @@ namespace OrganicChemistryNames
                     positions.Add(e);
                 }
             }
-
+            if (positions.Count == 0) return new TypedString("", Element.O);
             bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
             string pos = (hidePositions ? "" : ("-" + IP.listToString(positions, ",") + "-")) + Element.counters[positions.Count];
             return new TypedString( pos + "ol", Element.O);
+        }
+        private TypedString al()
+        {
+            extrasPositions.TryGetValue(Element.O, out List<Element> positionss);
+            if (positionss == null || positionss.Count == 0) return new TypedString("", Element.O);
+            List<Element> positions = new List<Element>();
+            foreach (Element e in positionss)
+            {
+                if (e.isAldehydeOxygen(grid))
+                {
+                    positions.Add(e);
+                }
+            }
+            if (positions.Count == 0) return new TypedString("", Element.O);
+            return new TypedString(positions.Count >= 2 ? "dial" : "al", Element.O);
+        }
+        private TypedString on()
+        {
+            extrasPositions.TryGetValue(Element.O, out List<Element> positionss);
+            if (positionss == null || positionss.Count == 0) return new TypedString("", Element.O);
+            List<Element> positions = new List<Element>();
+            foreach (Element e in positionss)
+            {
+                if (e.isKetone(grid))
+                {
+                    positions.Add(e);
+                }
+            }
+            if (positions.Count == 0) return new TypedString("", Element.O);
+            bool hidePositions = longestCC.Count < 3 || (longestCC.Count == 3 && positions.Count == 1 && extrasPositions.Count == 1);
+            string pos = (hidePositions ? "" : ("-" + IP.listToString(positions, ",") + "-")) + Element.counters[positions.Count];
+            return new TypedString(pos + "on", Element.O);
         }
         private void update()
         {
@@ -240,6 +312,20 @@ namespace OrganicChemistryNames
                     bondsPositions.AddToList(lccBonds[i].Type, lccBonds[i]);
                 }
             }
+            hasAlcohol = false;
+            hasAldehyde = false;
+            hasKetone = false;
+
+            extrasPositions.TryGetValue(Element.O, out List<Element> positions);
+            if (positions == null) return;
+            foreach (Element o in positions)
+            {
+                if (o.isAlcohol(grid)) hasAlcohol = true;
+                if (o.isAldehydeOxygen(grid)) hasAldehyde = true;
+                if (o.isKetone(grid)) hasKetone = true;
+            }
+            hasOxoGroup = hasKetone && hasAldehyde;
+            hasHydroxyGroup = hasAlcohol && hasAldehyde || hasAlcohol && hasKetone;
         }
     }
     public struct TypedString
