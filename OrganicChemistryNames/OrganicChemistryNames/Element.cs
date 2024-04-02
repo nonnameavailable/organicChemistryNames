@@ -230,7 +230,7 @@ namespace OrganicChemistryNames
         {
             List<Element> neighbors = neighboringElements(grid, Element.C);
             if (neighbors.Count == 0) return false;
-            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count == 1;
+            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count <= 1;
         }
 
         public bool isKetone(int[][] grid)
