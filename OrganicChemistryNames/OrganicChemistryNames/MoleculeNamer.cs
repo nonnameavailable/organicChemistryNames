@@ -16,7 +16,7 @@ namespace OrganicChemistryNames
         protected List<Element> lccBonds;
         protected Dictionary<int, List<Element>> extrasPositions;
         protected Dictionary<int, List<Element>> bondsPositions;
-        protected static List<int> halogenOrderList = new List<int>() { 8, 6, 7, 9 };
+        protected static List<int> halogenOrderList = new List<int>() { 7, 5, 6, 8 };
         protected Element startCarbon;
         protected int depth;
         protected int carbonConnection;

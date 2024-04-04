@@ -16,16 +16,15 @@ namespace OrganicChemistryNames
         public const int DOUBLE_BOND = 2;
         public const int TRIPLE_BOND = 3;
         public const int C = 4;
-        public const int H = 5;
-        public const int Cl = 6;
-        public const int F = 7;
-        public const int Br = 8;
-        public const int I = 9;
-        public const int O = 10;
+        public const int Cl = 5;
+        public const int F = 6;
+        public const int Br = 7;
+        public const int I = 8;
+        public const int O = 9;
         public const int ALL = -2;
 
-        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "H", "Cl", "F", "Br", "I", "O" };
-        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 1, 2 };
+        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O" };
+        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2 };
 
         public static Color[] fontColorMap = new Color[]
         {
@@ -34,7 +33,6 @@ namespace OrganicChemistryNames
             Color.Black, // double bond
             Color.Black, // triple bond
             Color.White, // carbon
-            Color.Black, // hydrogen
             Color.Black, // chlorine
             Color.Black, // fluor
             Color.White, // bromine
@@ -48,7 +46,6 @@ namespace OrganicChemistryNames
             Color.LightBlue, // double bond
             Color.Crimson, // triple bond
             Color.Black, // carbon
-            Color.White, // hydrogen
             Color.PaleGreen, // chlorine
             Color.LightYellow, // fluor
             Color.DarkRed, // bromine
@@ -83,7 +80,7 @@ namespace OrganicChemistryNames
             "nonadekakis",
             "icosakis"
         };
-        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "", "chlor", "fluor", "brom", "jod", "oxygen_lol" };
+        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "chlor", "fluor", "brom", "jod", "oxygen_lol" };
 
         public Element(int x, int y, int type)
         {
