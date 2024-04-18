@@ -51,6 +51,7 @@ namespace OrganicChemistryNames
         public const int Br = 7;
         public const int I = 8;
         public const int O = 9;
+        public const int S = 10;
         public const int ALL = -2;
 
         public static int AMINE = 100;
@@ -60,12 +61,13 @@ namespace OrganicChemistryNames
         public static int ALDEHYDE = 104;
         public static int NITRILE = 105;
         public static int AMIDE = 106;
-        public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE };
-        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo" };
-        public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on" };
+        public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE, ALDEHYDE };
+        public static int[] simpleTypes = new int[] { S, O, O, O };
+        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo", "" };
+        public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on", "al" };
 
-        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O" };
-        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2 };
+        public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O", "S" };
+        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2, 2 };
 
         public static Color[] fontColorMap = new Color[]
         {
@@ -78,7 +80,8 @@ namespace OrganicChemistryNames
             Color.Black, // fluor
             Color.White, // bromine
             Color.White, // iodine
-            Color.Black
+            Color.Black, // oxygen
+            Color.Black // sulphur
         };
         public static Color[] backgroundColorMap = new Color[]
         {
@@ -91,7 +94,8 @@ namespace OrganicChemistryNames
             Color.LightYellow, // fluor
             Color.DarkRed, // bromine
             Color.DarkViolet, // iodine
-            Color.LightBlue
+            Color.LightBlue, // oxygen
+            Color.Orange // sulphur
         };
 
         public static string[] carbonStems = new string[] {"", "meth", "eth", "prop", "but", "pent", "hex", "hept", "okt", "non", "dek",
@@ -121,7 +125,7 @@ namespace OrganicChemistryNames
             "nonadekakis",
             "icosakis"
         };
-        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "chlor", "fluor", "brom", "jod", "oxygen_lol" };
+        public static string[] elementNames = new string[] { "", "an", "en", "yn", "methyl", "chlor", "fluor", "brom", "jod", "oxygen_lol", "sulphur_lol" };
 
         public Element(int x, int y, int type)
         {
@@ -271,11 +275,36 @@ namespace OrganicChemistryNames
             return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count <= 1;
         }
 
+        public bool isThiolSulphur(int[][] grid)
+        {
+            return Type == Element.S && !hasDoubleBond(grid);
+        }
+
         public bool isKetone(int[][] grid)
         {
             List<Element> neighbors = neighboringElements(grid, Element.C);
             if (neighbors.Count == 0) return false;
             return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count == 2;
+        }
+        public bool isSimpleGroup(int simpleConstant, int[][] grid)
+        {
+            if (simpleConstant == Element.THIOL)
+            {
+                return isThiolSulphur(grid);
+            }
+            else if (simpleConstant == Element.ALCOHOL)
+            {
+                return isAlcohol(grid);
+            }
+            else if (simpleConstant == Element.KETONE)
+            {
+                return isKetone(grid);
+            }
+            else if (simpleConstant == Element.ALDEHYDE)
+            {
+                return isAldehydeOxygen(grid);
+            }
+            return false;
         }
     }
 }
