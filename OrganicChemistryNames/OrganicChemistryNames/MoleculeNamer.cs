@@ -16,7 +16,7 @@ namespace OrganicChemistryNames
         protected List<Element> lccBonds;
         protected Dictionary<int, List<Element>> extrasPositions;
         protected Dictionary<int, List<Element>> bondsPositions;
-        protected static List<int> halogenOrderList = new List<int>() { 7, 5, 6, 8 };
+        protected static List<int> halogenOrderList = new List<int>() { Element.Cl, Element.Br, Element.F, Element.I };
         protected Element startCarbon;
         protected int depth;
         protected int carbonConnection;
@@ -324,8 +324,16 @@ namespace OrganicChemistryNames
                 if (o.isAldehydeOxygen(grid)) hasAldehyde = true;
                 if (o.isKetone(grid)) hasKetone = true;
             }
-            hasOxoGroup = hasKetone && hasAldehyde;
-            hasHydroxyGroup = hasAlcohol && hasAldehyde || hasAlcohol && hasKetone;
+            hasOxoGroup = hasKetone && (hasAldehyde || depth > 0);
+            hasHydroxyGroup = (hasAlcohol && (hasAldehyde || depth > 0)) || (hasAlcohol && (hasKetone || depth > 0));
+        }
+        private static bool higherExists(int num, int[] arr)
+        {
+            foreach(int x in arr)
+            {
+                if (x > num) return true;
+            }
+            return false;
         }
     }
     public struct TypedString

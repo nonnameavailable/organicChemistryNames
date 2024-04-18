@@ -11,6 +11,36 @@ namespace OrganicChemistryNames
 {
     class Element
     {
+        //MAIN CARBON NUMBERING
+        //Carboxylic Acids
+        //Sulfonic Acids
+        //Esters
+        //Acid Halides
+        //Amides
+        //Nitriles
+        //Aldehydes
+        //Ketones
+        //Alcohols
+        //Thiols
+        //Amines
+        //Alkenes
+        //Alkynes
+
+        //NOMENCLATURE PRIORITY
+        //Carboxylic Acids(-COOH)
+        //Sulfonic Acids(-SO3H)
+        //Esters(-COOR)
+        //Acid Halides(-COX, where X is a halogen)
+        //Amides(-CONH2)
+        //Nitriles(-C≡N)
+        //Aldehydes(-CHO)
+        //Ketones(>C= O)
+        //Alcohols(-OH)
+        //Thiols(-SH)
+        //Amines(-NH2)
+        //Alkenes(>C= C <)
+        //Alkynes(-C≡C-)
+
         public const int EMPTY = 0;
         public const int SINGLE_BOND = 1;
         public const int DOUBLE_BOND = 2;
@@ -22,6 +52,17 @@ namespace OrganicChemistryNames
         public const int I = 8;
         public const int O = 9;
         public const int ALL = -2;
+
+        public static int AMINE = 100;
+        public static int THIOL = 101;
+        public static int ALCOHOL = 102;
+        public static int KETONE = 103;
+        public static int ALDEHYDE = 104;
+        public static int NITRILE = 105;
+        public static int AMIDE = 106;
+        public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE };
+        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo" };
+        public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on" };
 
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O" };
         public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2 };
@@ -216,11 +257,11 @@ namespace OrganicChemistryNames
             return Type == Element.O && !hasDoubleBond(grid);
         }
 
-        public bool isAldehydeCarbon(int[][] grid)
+        public bool isAldehydeAlcoholCarbon(int[][] grid)
         {
             List<Element> nC = neighboringElements(grid, Element.C);
             List<Element> nO = neighboringElements(grid, Element.O);
-            return Type == Element.C && nC.Count <= 1 && nO.Count == 1 && nO[0].hasDoubleBond(grid);
+            return Type == Element.C && nC.Count <= 1 && nO.Count == 1;
         }
 
         public bool isAldehydeOxygen(int[][] grid)

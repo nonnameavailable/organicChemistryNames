@@ -42,7 +42,7 @@ namespace OrganicChemistryNames
             }
             foreach(Crawler c in children)
             {
-                if (c.Path.Last().isAldehydeCarbon(grid))
+                if (c.Path.Last().isAldehydeAlcoholCarbon(grid))
                 {
                     return c.Path;
                 }
