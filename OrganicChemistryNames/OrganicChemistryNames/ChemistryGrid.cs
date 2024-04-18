@@ -21,6 +21,7 @@ namespace OrganicChemistryNames
         public int Width { get => width; }
         public int Height { get => height; }
         public int[][] Grid { get => grid; set => grid = value; }
+        public bool drawHydrogens { get; set; }
         public Form1 ParentForm { get => parentForm; set => parentForm = value; }
 
         public ChemistryGrid(int width, int height, int sqSize, Form1 parentForm)
@@ -30,6 +31,7 @@ namespace OrganicChemistryNames
             this.width = width;
             this.height = height;
             this.parentForm = parentForm;
+            drawHydrogens = false;
         }
         private int[][] newGrid(int width, int height)
         {
@@ -61,7 +63,7 @@ namespace OrganicChemistryNames
 
                     Element e = new Element(i, j, val);
                     bool isVerticalBond = e.Type <= 3 && grid[e.Y][e.X + 1] == 0;
-                    e.draw(g, SqSize, isVerticalBond, bgColorList[e.Type], fontColorList[e.Type], fontColorList[0]);
+                    e.draw(g, SqSize, isVerticalBond, bgColorList[e.Type], fontColorList[e.Type], fontColorList[0], grid, drawHydrogens);
                 }
             }
 
@@ -194,16 +196,9 @@ namespace OrganicChemistryNames
                     int type = grid[j][i];
                     if (type > 3)
                     {
-                        int bondCount = 0;
-                        bondCount += grid[j - 1][i];
-                        bondCount += grid[j][i + 1];
-                        bondCount += grid[j + 1][i];
-                        bondCount += grid[j][i - 1];
-                        //MessageBox.Show("bondcount: " + bondCount + Environment.NewLine + "maxbonds: " + Element.maxBondMap[type] + Environment.NewLine + "type: " + type);
-                        if (bondCount > Element.maxBondMap[type])
+                        if (new Element(i, j, type).bondCount(grid) > Element.maxBondMap[type])
                         {
                             return false;
-
                         }
                     }
                 }

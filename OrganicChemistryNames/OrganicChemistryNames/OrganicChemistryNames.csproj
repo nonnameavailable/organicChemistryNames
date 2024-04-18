@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CarbonChainer.cs" />
     <Compile Include="ChemistryGrid.cs" />
     <Compile Include="Crawler.cs" />
     <Compile Include="Element.cs" />

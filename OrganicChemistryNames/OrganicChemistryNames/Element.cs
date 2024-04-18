@@ -140,29 +140,50 @@ namespace OrganicChemistryNames
         public int Y { get; set; }
         public int CarbonChainConnection { get; set; }
 
-        public void draw(Graphics g, int sqSize, bool isRotated, Color backgroundColor, Color textColor, Color gridColor)
+        public void draw(Graphics g, int sqSize, bool isRotated, Color backgroundColor, Color textColor, Color gridColor, int[][] grid, bool drawHydrogens)
         {
-            Bitmap miniImage = new Bitmap(sqSize, sqSize);
-            Graphics mg = Graphics.FromImage(miniImage);
-            if (isRotated) mg.RotateTransform(90);
-
             string txt = characterMap[Type];
-            Font textFont = IP.fontToFitRect(txt, sqSize, sqSize, "Arial");
+            int HCount = 0;
+            if (drawHydrogens)
+            {
+                HCount = maxBondMap[Type] - bondCount(grid);
+                string HString = HCount > 0 ? "H" : "";
+                txt += HString;
+            }
 
+            Font textFont = new Font("Arial", 50);
+            SizeF textSize = TextRenderer.MeasureText(txt, textFont);
+            int mWidth = sqSize;
+            int mHeight = sqSize;
+            Bitmap miniImage = new Bitmap(sqSize, sqSize);
+            if(txt.Length > 0)
+            {
+                mWidth = isRotated ? (int)textSize.Height : (int)textSize.Width;
+                mHeight = isRotated ? (int)textSize.Width : (int)textSize.Height;
+                miniImage = new Bitmap(mWidth, mHeight);
+            }
+            Graphics mg = Graphics.FromImage(miniImage);
+            
             int xc = X * sqSize;
             int yc = Y * sqSize;
 
             int ox = 0;
-            int oy = isRotated ? -sqSize : 0;
+            int oy = 0;
 
-            
-
-            mg.FillRectangle(new SolidBrush(backgroundColor), ox, oy, sqSize, sqSize);
-            mg.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), ox, oy, sqSize, sqSize);
+            mg.FillRectangle(new SolidBrush(backgroundColor), ox, oy, mWidth, mHeight);
+            mg.DrawRectangle(new Pen(gridColor, (int)(sqSize * 0.05)), ox, oy, mWidth, mHeight);
+            if (isRotated)
+            {
+                mg.RotateTransform(90);
+                oy -= mWidth;
+            }
             mg.DrawString(txt, textFont, new SolidBrush(textColor), ox, oy);
-            
+            if (drawHydrogens && HCount > 1)
+            {
+                mg.DrawString(HCount.ToString(), new Font("Arial", (int)(sqSize / 2f), FontStyle.Bold), new SolidBrush(textColor), (int)(mWidth * 0.8), (int)(mHeight * 0.55));
+            }
             mg.Dispose();
-            g.DrawImage(miniImage, xc, yc);
+            g.DrawImage(miniImage, xc, yc, sqSize, sqSize);
             miniImage.Dispose();
         }
 
@@ -256,16 +277,27 @@ namespace OrganicChemistryNames
             return result;
         }
 
+        public int bondCount(int[][] grid)
+        {
+            int bc = 0;
+            bc += grid[Y - 1][X];
+            bc += grid[Y][X + 1];
+            bc += grid[Y + 1][X];
+            bc += grid[Y][X - 1];
+            return bc;
+        }
+
         public bool isAlcohol(int[][] grid)
         {
             return Type == Element.O && !hasDoubleBond(grid);
         }
 
-        public bool isAldehydeAlcoholCarbon(int[][] grid)
+        public bool isEndingCarbon(int[][] grid)
         {
             List<Element> nC = neighboringElements(grid, Element.C);
             List<Element> nO = neighboringElements(grid, Element.O);
-            return Type == Element.C && nC.Count <= 1 && nO.Count == 1;
+            List<Element> nS = neighboringElements(grid, Element.S);
+            return Type == Element.C && nC.Count <= 1 && (nO.Count > 0 || nS.Count > 0);
         }
 
         public bool isAldehydeOxygen(int[][] grid)

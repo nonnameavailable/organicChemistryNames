@@ -15,7 +15,7 @@ namespace OrganicChemistryNames
 
             foreach(Element ec in eCList)
             {
-                if (ec.isAldehydeAlcoholCarbon(grid))
+                if (ec.isEndingCarbon(grid))
                 {
                     return longestCarbonChain(grid, ec);
                 }

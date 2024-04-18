@@ -20,22 +20,16 @@ namespace OrganicChemistryNames
         protected Element startCarbon;
         protected int depth;
         protected int carbonConnection;
-        private bool hasHalogen;
-        private bool hasAlcohol;
-        private bool hasAldehyde;
-        private bool hasKetone;
-        private bool hasThiol;
-        private bool hasHydroxyGroup;
-        private bool hasOxoGroup;
+        private bool isComplex;
         private List<int> simpleGroupsList;
 
         public int CarbonChainConnection { get => carbonConnection; set => carbonConnection = value; }
-        protected bool HasHalogen { get => hasHalogen; set => hasHalogen = value; }
+        protected bool IsComplex { get => isComplex; set => isComplex = value; }
         public MoleculeNamer(int[][] grid, int depth)
         {
             this.grid = grid;
             this.depth = depth;
-            hasHalogen = false;
+            isComplex = false;
             simpleGroupsList = new List<int>();
         }
         public MoleculeNamer(int[][] grid, int depth, Element startCarbon, int carbonConnection)
@@ -44,7 +38,7 @@ namespace OrganicChemistryNames
             this.depth = depth;
             this.startCarbon = startCarbon;
             this.carbonConnection = carbonConnection;
-            hasHalogen = false;
+            isComplex = false;
             simpleGroupsList = new List<int>();
         }
 
@@ -115,7 +109,7 @@ namespace OrganicChemistryNames
                     List<TypedString> moleculeNameTypedList = kvp.Value[0].MoleculeNameTypedList;
                     string moleculeNameString = kvp.Key;
                     string startHyphen = cntr == 0 ? "" : "-";
-                    bool isComplex = kvp.Value[0].HasHalogen || int.TryParse(moleculeNameString.Substring(0, 1), out _);
+                    bool isComplex = kvp.Value[0].IsComplex || int.TryParse(moleculeNameString.Substring(0, 1), out _);
                     string leftPar = isComplex ? "(" : "";
                     string rightpar = isComplex ? ")" : "";
                     string counter = isComplex ? Element.complexCounters[kvp.Value.Count] : Element.counters[kvp.Value.Count];
@@ -142,7 +136,7 @@ namespace OrganicChemistryNames
                     string name = Element.counters[positions.Count] + Element.elementNames[i];
                     bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
                     result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positions, ",") + "-")) + name + "-", i));
-                    HasHalogen = true;
+                    IsComplex = true;
                 }
             }
 
@@ -152,7 +146,7 @@ namespace OrganicChemistryNames
         private List<TypedString> simplePrefixes()
         {
             List<TypedString> result = new List<TypedString>();
-            List<int> prefixGroupsList = listWithoutHighest(simpleGroupsList).Distinct().ToList().Select(type => type - 101).ToList();
+            List<int> prefixGroupsList = (depth > 0 ? simpleGroupsList : listWithoutHighest(simpleGroupsList)).Distinct().ToList().Select(type => type - 101).ToList();
             if (prefixGroupsList.Count == 0) return result;
 
             foreach (int i in prefixGroupsList)
@@ -169,7 +163,7 @@ namespace OrganicChemistryNames
                 if (positionss != null && positionss.Count > 0)
                 {
                     string name = Element.counters[positionss.Count] + Element.simplePrefixes[i];
-                    bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positionss.Count == 1 && extrasPositions.Count == 1);
+                    bool hidePositions = longestCC.Count < 2 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1);
                     result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positionss, ",") + "-")) + name + "-", Element.simpleTypes[i]));
                 }
             }
@@ -178,6 +172,7 @@ namespace OrganicChemistryNames
         }
         private TypedString simpleSuffixes()
         {
+            if (depth > 0) return new TypedString("", Element.O);
             if (simpleGroupsList.Count == 0) return new TypedString("", Element.O);
             int highestSimpleGroup = simpleGroupsList.Max();
             string suffix = Element.simpleSuffixes[highestSimpleGroup - 101];
@@ -283,45 +278,29 @@ namespace OrganicChemistryNames
                     bondsPositions.AddToList(lccBonds[i].Type, lccBonds[i]);
                 }
             }
-
-            hasAlcohol = false;
-            hasAldehyde = false;
-            hasKetone = false;
             extrasPositions.TryGetValue(Element.O, out List<Element> positions);
             if (positions != null)
             {
                 foreach (Element o in positions)
                 {
-                    if (o.isAlcohol(grid))
-                    {
-                        simpleGroupsList.Add(Element.ALCOHOL);
-                        hasAlcohol = true;
-                    }
-                        
-                    if (o.isAldehydeOxygen(grid))
-                    {
-                        simpleGroupsList.Add(Element.ALDEHYDE);
-                        hasAldehyde = true;
-                    }
-                    if (o.isKetone(grid))
-                    {
-                        simpleGroupsList.Add(Element.KETONE);
-                        hasKetone = true;
-                    }
+                    bool isAlcohol = o.isAlcohol(grid);
+                    bool isAldehyde = o.isAldehydeOxygen(grid);
+                    bool isKetone = o.isAldehydeOxygen(grid);
+                    if (isAlcohol) simpleGroupsList.Add(Element.ALCOHOL);
+                    if (isAldehyde) simpleGroupsList.Add(Element.ALDEHYDE);
+                    if (isKetone) simpleGroupsList.Add(Element.KETONE);
+                    IsComplex = IsComplex || isAlcohol || isAldehyde || isKetone;
                 }
             }
 
-
-            hasThiol = false;
             extrasPositions.TryGetValue(Element.S, out List<Element> positionss);
             if (positionss == null) return;
             foreach (Element s in positionss)
             {
-                if (s.isThiolSulphur(grid))
-                {
-                    simpleGroupsList.Add(Element.THIOL);
-                    hasThiol = true;
-                }
+                bool isThiol = s.isThiolSulphur(grid);
+                if (isThiol) simpleGroupsList.Add(Element.THIOL);
+                if (isThiol) IsComplex = true;
+                IsComplex = IsComplex || isThiol;
             }
         }
         private List<int> listWithoutHighest(List<int> list)

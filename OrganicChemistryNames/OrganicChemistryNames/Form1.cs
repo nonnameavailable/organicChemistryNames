@@ -16,10 +16,11 @@ namespace OrganicChemistryNames
         private Bitmap canvas;
         private ChemistryGrid grid;
         private PracticeGenerator pg;
+        private bool drawHydrogens;
         public Form1()
         {
             InitializeComponent();
-            grid = new ChemistryGrid(40, 40, 40, this);
+            grid = new ChemistryGrid(40, 40, 50, this);
             pg = new PracticeGenerator(grid);
             canvas = grid.renderedGrid();
             mainPictureBox.Image = canvas;
@@ -32,6 +33,7 @@ namespace OrganicChemistryNames
             }
             Width = 1200;
             Height = 900;
+            drawHydrogens = false;
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -53,6 +55,9 @@ namespace OrganicChemistryNames
                 int[][] backup = IP.arrCopy(pg.ChemistryGrid.Grid);
                 pg.ChemistryGrid.Grid = grid.Grid;
                 grid.Grid = backup;
+            } else if(keyData == Keys.H)
+            {
+                grid.drawHydrogens = !grid.drawHydrogens;
             }
             repaint();
             return base.ProcessCmdKey(ref msg, keyData);
