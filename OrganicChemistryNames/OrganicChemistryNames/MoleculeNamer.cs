@@ -177,6 +177,9 @@ namespace OrganicChemistryNames
             int highestSimpleGroup = simpleGroupsList.Max();
             string suffix = Element.simpleSuffixes[highestSimpleGroup - 101];
             int type = Element.simpleTypes[highestSimpleGroup - 101];
+
+            if (highestSimpleGroup == Element.CARBOXYLIC_ACID) return new TypedString(suffix, type);
+
             extrasPositions.TryGetValue(type, out List<Element> positionss);
             if (positionss == null || positionss.Count == 0) return new TypedString("", Element.O);
             List<Element> positions = new List<Element>();
@@ -188,7 +191,7 @@ namespace OrganicChemistryNames
                 }
             }
             if (positions.Count == 0) return new TypedString("", Element.O);
-            bool hidePositions = longestCC.Count == 1 || (longestCC.Count == 2 && positions.Count == 1) || highestSimpleGroup == Element.ALDEHYDE;
+            bool hidePositions = longestCC.Count == 1 || (longestCC.Count == 2 && positions.Count == 1) || (highestSimpleGroup == Element.ALDEHYDE && depth == 0);
             string pos = (hidePositions ? "" : ("-" + IP.listToString(positions, ",") + "-")) + Element.counters[positions.Count];
             return new TypedString(pos + suffix, type);
         }
@@ -278,29 +281,30 @@ namespace OrganicChemistryNames
                     bondsPositions.AddToList(lccBonds[i].Type, lccBonds[i]);
                 }
             }
-            extrasPositions.TryGetValue(Element.O, out List<Element> positions);
-            if (positions != null)
+            extrasPositions.TryGetValue(Element.O, out List<Element> positionsO);
+            if (positionsO != null)
             {
-                foreach (Element o in positions)
+                foreach (Element o in positionsO)
                 {
                     bool isAlcohol = o.isAlcohol(grid);
                     bool isAldehyde = o.isAldehydeOxygen(grid);
                     bool isKetone = o.isAldehydeOxygen(grid);
+                    bool isCarboxylic = o.isCarboxylicOxygen(grid);
                     if (isAlcohol) simpleGroupsList.Add(Element.ALCOHOL);
                     if (isAldehyde) simpleGroupsList.Add(Element.ALDEHYDE);
                     if (isKetone) simpleGroupsList.Add(Element.KETONE);
-                    IsComplex = IsComplex || isAlcohol || isAldehyde || isKetone;
+                    if (isCarboxylic) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
+                    IsComplex = IsComplex || isAlcohol || isAldehyde || isKetone || isCarboxylic;
                 }
             }
 
-            extrasPositions.TryGetValue(Element.S, out List<Element> positionss);
-            if (positionss == null) return;
-            foreach (Element s in positionss)
+            extrasPositions.TryGetValue(Element.S, out List<Element> positionsS);
+            if (positionsS == null) return;
+            foreach (Element s in positionsS)
             {
                 bool isThiol = s.isThiolSulphur(grid);
                 if (isThiol) simpleGroupsList.Add(Element.THIOL);
                 if (isThiol) IsComplex = true;
-                IsComplex = IsComplex || isThiol;
             }
         }
         private List<int> listWithoutHighest(List<int> list)

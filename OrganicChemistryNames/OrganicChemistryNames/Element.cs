@@ -52,6 +52,7 @@ namespace OrganicChemistryNames
         public const int I = 8;
         public const int O = 9;
         public const int S = 10;
+        public const int N = 11;
         public const int ALL = -2;
 
         public static int AMINE = 100;
@@ -61,13 +62,18 @@ namespace OrganicChemistryNames
         public static int ALDEHYDE = 104;
         public static int NITRILE = 105;
         public static int AMIDE = 106;
-        public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE, ALDEHYDE };
-        public static int[] simpleTypes = new int[] { S, O, O, O };
-        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo", "" };
-        public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on", "al" };
+        public static int ACID_HALIDE = 107;
+        public static int ESTER = 108;
+        public static int SULFONIC_ACID = 109;
+        public static int CARBOXYLIC_ACID = 110;
+        public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE, ALDEHYDE, NITRILE, AMIDE, ACID_HALIDE, ESTER, SULFONIC_ACID, CARBOXYLIC_ACID };
+        public static int[] simpleTypes = new int[] { S, O, O, O, N, N, O, O, S, O };
+        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo", "oxo", "NITRILE", "AMIDE", "ACID_HALIDE", "ESTER", "SULFONIC_ACID", "CARBOXYLIC_ACID" };
+        public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on", "al", "NITRILE", "AMIDE", "ACID_HALIDE", "ESTER", "SULFONIC_ACID", "ová kyselina" };
 
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O", "S" };
-        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2, 2 };
+        public static int[] maxBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2, 6 };
+        public static int[] preferredBondMap = new int[] { -1, 0, 0, 0, 4, 1, 1, 1, 1, 2, 2 };
 
         public static Color[] fontColorMap = new Color[]
         {
@@ -146,7 +152,7 @@ namespace OrganicChemistryNames
             int HCount = 0;
             if (drawHydrogens)
             {
-                HCount = maxBondMap[Type] - bondCount(grid);
+                HCount = preferredBondMap[Type] - bondCount(grid);
                 string HString = HCount > 0 ? "H" : "";
                 txt += HString;
             }
@@ -289,7 +295,7 @@ namespace OrganicChemistryNames
 
         public bool isAlcohol(int[][] grid)
         {
-            return Type == Element.O && !hasDoubleBond(grid);
+            return Type == Element.O && !hasDoubleBond(grid) && !neighboringElements(grid, Element.C)[0].isCarboxylicCarbon(grid);
         }
 
         public bool isEndingCarbon(int[][] grid)
@@ -297,14 +303,25 @@ namespace OrganicChemistryNames
             List<Element> nC = neighboringElements(grid, Element.C);
             List<Element> nO = neighboringElements(grid, Element.O);
             List<Element> nS = neighboringElements(grid, Element.S);
-            return Type == Element.C && nC.Count <= 1 && (nO.Count > 0 || nS.Count > 0);
+            List<Element> Os = NH.listOfElements(Element.O, grid);
+            List<int> simpleGroupsList = new List<int>();
+            foreach(Element e in Os)
+            {
+                if (e.isAldehydeOxygen(grid)) simpleGroupsList.Add(Element.ALDEHYDE);
+                if (e.isCarboxylicOxygen(grid)) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
+            }
+            int myGroupType = 0;
+            if (nO.Count > 0 && nO[0].isAldehydeOxygen(grid)) myGroupType = Element.ALDEHYDE;
+            if (isCarboxylicCarbon(grid)) myGroupType = Element.CARBOXYLIC_ACID;
+            if (nS.Count > 0 && nS[0].isThiolSulphur(grid)) myGroupType = Element.THIOL;
+            return Type == Element.C && nC.Count <= 1 && (myGroupType != 0 && myGroupType >= simpleGroupsList.Max());
         }
 
         public bool isAldehydeOxygen(int[][] grid)
         {
             List<Element> neighbors = neighboringElements(grid, Element.C);
             if (neighbors.Count == 0) return false;
-            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count <= 1;
+            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count <= 1 && !neighbors[0].isCarboxylicCarbon(grid);
         }
 
         public bool isThiolSulphur(int[][] grid)
@@ -317,6 +334,17 @@ namespace OrganicChemistryNames
             List<Element> neighbors = neighboringElements(grid, Element.C);
             if (neighbors.Count == 0) return false;
             return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count == 2;
+        }
+        public bool isCarboxylicCarbon(int[][] grid)
+        {
+            List<Element> neighborOxygens = neighboringElements(grid, Element.O);
+            return Type == Element.C && neighborOxygens.Count == 2 && (neighborOxygens[0].hasDoubleBond(grid) || neighborOxygens[1].hasDoubleBond(grid));
+        }
+        public bool isCarboxylicOxygen(int[][] grid)
+        {
+            List<Element> neighbors = neighboringElements(grid, Element.C);
+            if (neighbors.Count == 0) return false;
+            return Type == Element.O && hasDoubleBond(grid) && neighbors[0].neighboringElements(grid, Element.C).Count <= 1 && neighbors[0].neighboringElements(grid, Element.O).Count == 2;
         }
         public bool isSimpleGroup(int simpleConstant, int[][] grid)
         {
@@ -338,5 +366,6 @@ namespace OrganicChemistryNames
             }
             return false;
         }
+
     }
 }
