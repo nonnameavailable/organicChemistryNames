@@ -313,7 +313,11 @@ namespace OrganicChemistryNames
             int myGroupType = 0;
             if (nO.Count > 0 && nO[0].isAldehydeOxygen(grid)) myGroupType = Element.ALDEHYDE;
             if (isCarboxylicCarbon(grid)) myGroupType = Element.CARBOXYLIC_ACID;
-            if (nS.Count > 0 && nS[0].isThiolSulphur(grid)) myGroupType = Element.THIOL;
+            if (nS.Count > 0 && nS[0].isThiolSulphur(grid))
+            {
+                myGroupType = Element.THIOL;
+                simpleGroupsList.Add(Element.THIOL);
+            }
             return Type == Element.C && nC.Count <= 1 && (myGroupType != 0 && myGroupType >= simpleGroupsList.Max());
         }
 
