@@ -148,11 +148,11 @@ namespace OrganicChemistryNames
             List<TypedString> result = new List<TypedString>();
             List<int> prefixGroupsList = (depth > 0 ? simpleGroupsList : listWithoutHighest(simpleGroupsList)).Distinct().ToList().Select(type => type - 101).ToList();
             if (prefixGroupsList.Count == 0) return result;
-
             foreach (int i in prefixGroupsList)
             {
                 extrasPositions.TryGetValue(Element.simpleTypes[i], out List<Element> positions);
                 List<Element> positionss = new List<Element>();
+
                 foreach(Element e in positions)
                 {
                     if (e.isSimpleGroup(i + 101, grid))
@@ -167,7 +167,6 @@ namespace OrganicChemistryNames
                     result.Add(new TypedString((hidePositions ? "" : (IP.listToString(positionss, ",") + "-")) + name + "-", Element.simpleTypes[i]));
                 }
             }
-
             return result;
         }
         private TypedString simpleSuffixes()
@@ -178,7 +177,7 @@ namespace OrganicChemistryNames
             string suffix = Element.simpleSuffixes[highestSimpleGroup - 101];
             int type = Element.simpleTypes[highestSimpleGroup - 101];
 
-            if (highestSimpleGroup == Element.CARBOXYLIC_ACID) return new TypedString(suffix, type);
+            if (highestSimpleGroup == Element.CARBOXYLIC_ACID) return new TypedString(Element.counters[simpleGroupsList.Count(n => n == Element.CARBOXYLIC_ACID)] + suffix, type);
 
             extrasPositions.TryGetValue(type, out List<Element> positionss);
             if (positionss == null || positionss.Count == 0) return new TypedString("", Element.O);
@@ -191,7 +190,7 @@ namespace OrganicChemistryNames
                 }
             }
             if (positions.Count == 0) return new TypedString("", Element.O);
-            bool hidePositions = longestCC.Count == 1 || (longestCC.Count == 2 && positions.Count == 1) || (highestSimpleGroup == Element.ALDEHYDE && depth == 0);
+            bool hidePositions = longestCC.Count == 1 || (longestCC.Count == 2 && positions.Count == 1 && extrasPositions.Count == 1) || (highestSimpleGroup == Element.ALDEHYDE && depth == 0);
             string pos = (hidePositions ? "" : ("-" + IP.listToString(positions, ",") + "-")) + Element.counters[positions.Count];
             return new TypedString(pos + suffix, type);
         }
@@ -282,6 +281,7 @@ namespace OrganicChemistryNames
                 }
             }
             extrasPositions.TryGetValue(Element.O, out List<Element> positionsO);
+            bool carboxylicWasFound = false;
             if (positionsO != null)
             {
                 foreach (Element o in positionsO)
@@ -293,7 +293,7 @@ namespace OrganicChemistryNames
                     if (isAlcohol) simpleGroupsList.Add(Element.ALCOHOL);
                     if (isAldehyde) simpleGroupsList.Add(Element.ALDEHYDE);
                     if (isKetone) simpleGroupsList.Add(Element.KETONE);
-                    if (isCarboxylic) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
+                    if (isCarboxylic && !carboxylicWasFound) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
                     IsComplex = IsComplex || isAlcohol || isAldehyde || isKetone || isCarboxylic;
                 }
             }

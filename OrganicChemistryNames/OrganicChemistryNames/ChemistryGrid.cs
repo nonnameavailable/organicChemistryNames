@@ -77,7 +77,7 @@ namespace OrganicChemistryNames
             return result;
         }
 
-        public void addElement(int x, int y, int type)
+        public void addElement(int x, int y, int type, int bond)
         {
             int currentElement = grid[y][x];
             int[] nbrDr = neighborDirection(x, y);
@@ -109,7 +109,7 @@ namespace OrganicChemistryNames
             }
             else
             {
-                attachElement(x, y, type, nbrDr);
+                attachElement(x, y, type, nbrDr, bond);
             }
             if (!gridIsValid())
             {
@@ -118,7 +118,7 @@ namespace OrganicChemistryNames
 
         }
 
-        private void attachElement(int x, int y, int type, int[] direction)
+        private void attachElement(int x, int y, int type, int[] direction, int bond)
         {
             int maxX = grid[0].Length - 2;
             int maxY = grid.Length - 2;
@@ -127,7 +127,7 @@ namespace OrganicChemistryNames
             int xC = x + direction[0];
             int yC = y + direction[1];
             if (yC > maxY || yC < minY || xC > maxX || xC < minX) return;
-            grid[y][x] = Element.SINGLE_BOND;
+            grid[y][x] = bond;
             grid[yC][xC] = type;
         }
 

@@ -293,11 +293,6 @@ namespace OrganicChemistryNames
             return bc;
         }
 
-        public bool isAlcohol(int[][] grid)
-        {
-            return Type == Element.O && !hasDoubleBond(grid) && !neighboringElements(grid, Element.C)[0].isCarboxylicCarbon(grid);
-        }
-
         public bool isEndingCarbon(int[][] grid)
         {
             List<Element> nC = neighboringElements(grid, Element.C);
@@ -331,6 +326,11 @@ namespace OrganicChemistryNames
         public bool isThiolSulphur(int[][] grid)
         {
             return Type == Element.S && !hasDoubleBond(grid);
+        }
+
+        public bool isAlcohol(int[][] grid)
+        {
+            return Type == Element.O && !hasDoubleBond(grid) && !neighboringElements(grid, Element.C)[0].isCarboxylicCarbon(grid);
         }
 
         public bool isKetone(int[][] grid)

@@ -36,19 +36,29 @@ namespace OrganicChemistryNames
 
             bool includeCarbons = f.PracticeIncludeCarbons;
             bool includeHalogens = f.PracticeIncludeHalogens;
+            bool includeOxygen = f.PracticeIncludeOxygen;
             bool includeBonds = f.PracticeIncludeBonds;
 
             int mainChainLength = rnd.Next(minMainChainLength, maxMainChainLength);
-            chemistryGrid.addElement(startX, startY, Element.C);
+            chemistryGrid.addElement(startX, startY, Element.C, Element.SINGLE_BOND);
             List<Element> longestCC = new List<Element>();
             longestCC.Add(new Element(startX, startY, Element.C));
-            if (includeBonds)
+
+            for (int i = 0; i < mainChainLength; i++)
             {
-                for (int i = 0; i < mainChainLength; i++)
+                int bond = Element.SINGLE_BOND;
+                if(includeBonds && (rnd.Next(0, 101) < bondChance))
                 {
-                    chemistryGrid.addElement(startX + i * 2 + 1, startY, Element.C);
-                    longestCC.Add(new Element(startX + i * 2 + 1 + 1, startY, Element.C));
+                    if(rnd.Next(0, 101) < 50)
+                    {
+                        bond = Element.DOUBLE_BOND;
+                    } else
+                    {
+                        bond = Element.TRIPLE_BOND;
+                    }
                 }
+                chemistryGrid.addElement(startX + i * 2 + 1, startY, Element.C, bond);
+                longestCC.Add(new Element(startX + i * 2 + 1 + 1, startY, Element.C));
             }
 
             List<int> generationList = new List<int>();
@@ -60,21 +70,12 @@ namespace OrganicChemistryNames
                     generationList.Add(Element.C);
                 }
             }
+            if (includeOxygen) generationList.Add(Element.O);
+            if (generationList.Count == 0) return;
             for (int i = 0; i < longestCC.Count; i++)
             {
                 int cmaxSubLength = Math.Abs(Math.Abs(longestCC.Count / 2 - i) - longestCC.Count / 2 - 1);
                 Element cc = longestCC[i];
-                if (rnd.Next(0, 101) < bondChance && i < longestCC.Count - 2)
-                {
-                    if(rnd.Next(0, 101) < 51)
-                    {
-                        chemistryGrid.addElement(cc.X + 1, cc.Y, Element.DOUBLE_BOND);
-                    } else
-                    {
-                        chemistryGrid.addElement(cc.X + 1, cc.Y, Element.TRIPLE_BOND);
-                    }
-                    
-                }
                 if (rnd.Next(0, 101) < subChance)
                 {
                     int generatedSub = generationList[rnd.Next(0, generationList.Count)];
@@ -83,7 +84,7 @@ namespace OrganicChemistryNames
                     {
                         for (int j = 0; j < generatedSubCount; j++)
                         {
-                            chemistryGrid.addElement(cc.X, cc.Y + 1 + j * 2, generatedSub);
+                            chemistryGrid.addElement(cc.X, cc.Y + 1 + j * 2, generatedSub, Element.SINGLE_BOND);
                         }
                     }
                 }
@@ -95,7 +96,7 @@ namespace OrganicChemistryNames
                     {
                         for (int j = 0; j < generatedSubCount; j++)
                         {
-                            chemistryGrid.addElement(cc.X, cc.Y - 1 - j * 2, generatedSub);
+                            chemistryGrid.addElement(cc.X, cc.Y - 1 - j * 2, generatedSub, Element.SINGLE_BOND);
                         }
                     }
                 }

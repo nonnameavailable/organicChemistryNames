@@ -16,7 +16,6 @@ namespace OrganicChemistryNames
         private Bitmap canvas;
         private ChemistryGrid grid;
         private PracticeGenerator pg;
-        private bool drawHydrogens;
         public Form1()
         {
             InitializeComponent();
@@ -33,7 +32,6 @@ namespace OrganicChemistryNames
             }
             Width = 1200;
             Height = 900;
-            drawHydrogens = false;
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -86,11 +84,11 @@ namespace OrganicChemistryNames
             {
                 if (me.Button == MouseButtons.Left)
                 {
-                    grid.addElement(x, y, paintingType());
+                    grid.addElement(x, y, paintingType(), Element.SINGLE_BOND);
                 }
                 else if (me.Button == MouseButtons.Right)
                 {
-                    grid.addElement(x, y, 0);
+                    grid.addElement(x, y, 0, Element.SINGLE_BOND);
                 }
             }
             catch (IndexOutOfRangeException)
@@ -178,6 +176,7 @@ namespace OrganicChemistryNames
         public bool PracticeIncludeBonds { get => includeBondsCB.Checked; set => includeBondsCB.Checked = value; }
         public bool PracticeIncludeCarbons { get => includeCarbonCB.Checked; set => includeCarbonCB.Checked = value; }
         public bool PracticeIncludeHalogens { get => includeHalogensCB.Checked; set => includeHalogensCB.Checked = value; }
+        public bool PracticeIncludeOxygen { get => includeOxygenCB.Checked; set => includeOxygenCB.Checked = value; }
         public bool IsInPracticeMode { get; set; }
 
         private void minLCCNud_ValueChanged(object sender, EventArgs e)
