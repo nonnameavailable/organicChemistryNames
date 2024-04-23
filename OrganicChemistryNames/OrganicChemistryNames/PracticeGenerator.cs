@@ -37,7 +37,7 @@ namespace OrganicChemistryNames
             bool includeCarbons = f.PracticeIncludeCarbons;
             bool includeHalogens = f.PracticeIncludeHalogens;
             bool includeOxygen = f.PracticeIncludeOxygen;
-            bool includeBonds = f.PracticeIncludeBonds;
+            bool guaranteeCAcid = f.PracticeGuaranteeCAcid;
 
             int mainChainLength = rnd.Next(minMainChainLength, maxMainChainLength);
             chemistryGrid.addElement(startX, startY, Element.C, Element.SINGLE_BOND);
@@ -47,7 +47,7 @@ namespace OrganicChemistryNames
             for (int i = 0; i < mainChainLength; i++)
             {
                 int bond = Element.SINGLE_BOND;
-                if(includeBonds && (rnd.Next(0, 101) < bondChance))
+                if(rnd.Next(0, 101) < bondChance)
                 {
                     if(rnd.Next(0, 101) < 50)
                     {
@@ -62,7 +62,7 @@ namespace OrganicChemistryNames
             }
 
             List<int> generationList = new List<int>();
-            if (includeHalogens) generationList = generationList.Concat(new List<int>() { 8, 6, 7, 9 }).ToList();
+            if (includeHalogens) generationList = generationList.Concat(new List<int>() { 7, 5, 6, 8 }).ToList();
             if (includeCarbons)
             {
                 for(int i = 0; i < carbonCount; i++)
@@ -72,6 +72,11 @@ namespace OrganicChemistryNames
             }
             if (includeOxygen) generationList.Add(Element.O);
             if (generationList.Count == 0) return;
+            if (guaranteeCAcid)
+            {
+                chemistryGrid.addElement(longestCC[0].X, longestCC[0].Y + 1, Element.O, Element.SINGLE_BOND);
+                chemistryGrid.addElement(longestCC[0].X, longestCC[0].Y - 1, Element.O, Element.DOUBLE_BOND);
+            }
             for (int i = 0; i < longestCC.Count; i++)
             {
                 int cmaxSubLength = Math.Abs(Math.Abs(longestCC.Count / 2 - i) - longestCC.Count / 2 - 1);
@@ -79,25 +84,29 @@ namespace OrganicChemistryNames
                 if (rnd.Next(0, 101) < subChance)
                 {
                     int generatedSub = generationList[rnd.Next(0, generationList.Count)];
-                    int generatedSubCount = rnd.Next(IP.clamp(minSubLength, 0, cmaxSubLength), IP.clamp(cmaxSubLength, 0, maxSubLength));
-                    if (generatedSub != 0)
+                    int generatedSubCount = generatedSub == Element.C ? rnd.Next(IP.clamp(minSubLength, 0, cmaxSubLength), IP.clamp(cmaxSubLength, 0, maxSubLength)) : 1;
+                    int bond = Element.SINGLE_BOND;
+                    if (generatedSub == Element.O && rnd.Next(0, 101) < 50)
                     {
-                        for (int j = 0; j < generatedSubCount; j++)
-                        {
-                            chemistryGrid.addElement(cc.X, cc.Y + 1 + j * 2, generatedSub, Element.SINGLE_BOND);
-                        }
+                        bond = Element.DOUBLE_BOND;
+                    }
+                    for (int j = 0; j < generatedSubCount; j++)
+                    {
+                        chemistryGrid.addElement(cc.X, cc.Y + 1 + j * 2, generatedSub, bond);
                     }
                 }
-                if(rnd.Next(0, 101) < subChance)
+                if (rnd.Next(0, 101) < subChance)
                 {
                     int generatedSub = generationList[rnd.Next(0, generationList.Count)];
                     int generatedSubCount = rnd.Next(IP.clamp(minSubLength, 0, cmaxSubLength), IP.clamp(cmaxSubLength, 0, maxSubLength));
-                    if (generatedSub != 0)
+                    int bond = Element.SINGLE_BOND;
+                    if (generatedSub == Element.O && rnd.Next(0, 101) < 50)
                     {
-                        for (int j = 0; j < generatedSubCount; j++)
-                        {
-                            chemistryGrid.addElement(cc.X, cc.Y - 1 - j * 2, generatedSub, Element.SINGLE_BOND);
-                        }
+                        bond = Element.DOUBLE_BOND;
+                    }
+                    for (int j = 0; j < generatedSubCount; j++)
+                    {
+                        chemistryGrid.addElement(cc.X, cc.Y - 1 - j * 2, generatedSub, bond);
                     }
                 }
             }

@@ -75,13 +75,6 @@ namespace OrganicChemistryNames
                 TypedString stem = new TypedString(Element.carbonStems[longestCC.Count], Element.C);
                 List<TypedString> bonds = bondsNamePart();
 
-                if(ylGroups.Count == 0 && halogens.Count > 0)
-                {
-                    TypedString lastHalogen = halogens.Last();
-                    lastHalogen.Text = lastHalogen.Text.Substring(0, lastHalogen.Text.Length - 1);
-                    halogens[halogens.Count - 1] = lastHalogen;
-                }
-
                 List<TypedString> result = new List<TypedString>();
                 result = result.Concat(halogens).ToList();
                 result = result.Concat(simplePrefixes()).ToList();
@@ -148,14 +141,17 @@ namespace OrganicChemistryNames
             List<TypedString> result = new List<TypedString>();
             List<int> prefixGroupsList = (depth > 0 ? simpleGroupsList : listWithoutHighest(simpleGroupsList)).Distinct().ToList().Select(type => type - 101).ToList();
             if (prefixGroupsList.Count == 0) return result;
+
+            bool onlyOneOxo = simpleGroupsList.Max() == Element.CARBOXYLIC_ACID && prefixGroupsList.Contains(Element.ALDEHYDE - 101) && prefixGroupsList.Contains(Element.KETONE - 101);
+            if (onlyOneOxo) prefixGroupsList.RemoveAll(n => n == (Element.ALDEHYDE - 101));
             foreach (int i in prefixGroupsList)
             {
                 extrasPositions.TryGetValue(Element.simpleTypes[i], out List<Element> positions);
                 List<Element> positionss = new List<Element>();
 
-                foreach(Element e in positions)
+                foreach (Element e in positions)
                 {
-                    if (e.isSimpleGroup(i + 101, grid))
+                    if (e.isSimpleGroup(i + 101, grid) || (onlyOneOxo && e.isAldehydeOxygen(grid) && i + 101 != Element.ALCOHOL))
                     {
                         positionss.Add(e);
                     }
@@ -281,19 +277,18 @@ namespace OrganicChemistryNames
                 }
             }
             extrasPositions.TryGetValue(Element.O, out List<Element> positionsO);
-            bool carboxylicWasFound = false;
             if (positionsO != null)
             {
                 foreach (Element o in positionsO)
                 {
                     bool isAlcohol = o.isAlcohol(grid);
                     bool isAldehyde = o.isAldehydeOxygen(grid);
-                    bool isKetone = o.isAldehydeOxygen(grid);
+                    bool isKetone = o.isKetone(grid);
                     bool isCarboxylic = o.isCarboxylicOxygen(grid);
                     if (isAlcohol) simpleGroupsList.Add(Element.ALCOHOL);
                     if (isAldehyde) simpleGroupsList.Add(Element.ALDEHYDE);
                     if (isKetone) simpleGroupsList.Add(Element.KETONE);
-                    if (isCarboxylic && !carboxylicWasFound) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
+                    if (isCarboxylic) simpleGroupsList.Add(Element.CARBOXYLIC_ACID);
                     IsComplex = IsComplex || isAlcohol || isAldehyde || isKetone || isCarboxylic;
                 }
             }

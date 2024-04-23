@@ -173,10 +173,10 @@ namespace OrganicChemistryNames
         public int PracticeSubChance { get => (int)subChanceNud.Value; set => subChanceNud.Value = value; }
         public int PracticeBondChance { get => (int)bondChanceNud.Value; set => bondChanceNud.Value = value; }
         public int PracticeCarbonCount { get => (int)carbonCountNud.Value; set => carbonCountNud.Value = value; }
-        public bool PracticeIncludeBonds { get => includeBondsCB.Checked; set => includeBondsCB.Checked = value; }
         public bool PracticeIncludeCarbons { get => includeCarbonCB.Checked; set => includeCarbonCB.Checked = value; }
         public bool PracticeIncludeHalogens { get => includeHalogensCB.Checked; set => includeHalogensCB.Checked = value; }
         public bool PracticeIncludeOxygen { get => includeOxygenCB.Checked; set => includeOxygenCB.Checked = value; }
+        public bool PracticeGuaranteeCAcid { get => guaranteeCAcidCB.Checked; set => guaranteeCAcidCB.Checked = value; }
         public bool IsInPracticeMode { get; set; }
 
         private void minLCCNud_ValueChanged(object sender, EventArgs e)

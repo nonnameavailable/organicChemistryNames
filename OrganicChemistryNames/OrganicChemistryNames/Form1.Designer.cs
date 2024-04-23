@@ -37,6 +37,7 @@ namespace OrganicChemistryNames
             this.elementFLP = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.guaranteeCAcidCB = new System.Windows.Forms.CheckBox();
             this.includeOxygenCB = new System.Windows.Forms.CheckBox();
             this.carbonCountNud = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -44,7 +45,6 @@ namespace OrganicChemistryNames
             this.label6 = new System.Windows.Forms.Label();
             this.subChanceNud = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
-            this.includeBondsCB = new System.Windows.Forms.CheckBox();
             this.includeCarbonCB = new System.Windows.Forms.CheckBox();
             this.includeHalogensCB = new System.Windows.Forms.CheckBox();
             this.startYNud = new System.Windows.Forms.NumericUpDown();
@@ -67,7 +67,6 @@ namespace OrganicChemistryNames
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.guaranteeCAcidCB = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -133,7 +132,7 @@ namespace OrganicChemistryNames
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(136, 465);
+            this.tabPage1.Size = new System.Drawing.Size(136, 563);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "prvky";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -171,7 +170,6 @@ namespace OrganicChemistryNames
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.subChanceNud);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.includeBondsCB);
             this.groupBox1.Controls.Add(this.includeCarbonCB);
             this.groupBox1.Controls.Add(this.includeHalogensCB);
             this.groupBox1.Controls.Add(this.startYNud);
@@ -193,11 +191,19 @@ namespace OrganicChemistryNames
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "practice settings";
             // 
+            // guaranteeCAcidCB
+            // 
+            this.guaranteeCAcidCB.AutoSize = true;
+            this.guaranteeCAcidCB.Location = new System.Drawing.Point(3, 320);
+            this.guaranteeCAcidCB.Name = "guaranteeCAcidCB";
+            this.guaranteeCAcidCB.Size = new System.Drawing.Size(102, 17);
+            this.guaranteeCAcidCB.TabIndex = 22;
+            this.guaranteeCAcidCB.Text = "guaranteeCAcid";
+            this.guaranteeCAcidCB.UseVisualStyleBackColor = true;
+            // 
             // includeOxygenCB
             // 
             this.includeOxygenCB.AutoSize = true;
-            this.includeOxygenCB.Checked = true;
-            this.includeOxygenCB.CheckState = System.Windows.Forms.CheckState.Checked;
             this.includeOxygenCB.Location = new System.Drawing.Point(3, 297);
             this.includeOxygenCB.Name = "includeOxygenCB";
             this.includeOxygenCB.Size = new System.Drawing.Size(96, 17);
@@ -244,11 +250,6 @@ namespace OrganicChemistryNames
             this.bondChanceNud.Size = new System.Drawing.Size(75, 20);
             this.bondChanceNud.TabIndex = 18;
             this.toolTip1.SetToolTip(this.bondChanceNud, "Chance of bond turning into double / triple bond");
-            this.bondChanceNud.Value = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
             // 
             // label6
             // 
@@ -286,23 +287,9 @@ namespace OrganicChemistryNames
             this.label5.TabIndex = 15;
             this.label5.Text = "sub ch.";
             // 
-            // includeBondsCB
-            // 
-            this.includeBondsCB.AutoSize = true;
-            this.includeBondsCB.Checked = true;
-            this.includeBondsCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeBondsCB.Location = new System.Drawing.Point(3, 343);
-            this.includeBondsCB.Name = "includeBondsCB";
-            this.includeBondsCB.Size = new System.Drawing.Size(90, 17);
-            this.includeBondsCB.TabIndex = 14;
-            this.includeBondsCB.Text = "includeBonds";
-            this.includeBondsCB.UseVisualStyleBackColor = true;
-            // 
             // includeCarbonCB
             // 
             this.includeCarbonCB.AutoSize = true;
-            this.includeCarbonCB.Checked = true;
-            this.includeCarbonCB.CheckState = System.Windows.Forms.CheckState.Checked;
             this.includeCarbonCB.Location = new System.Drawing.Point(3, 274);
             this.includeCarbonCB.Name = "includeCarbonCB";
             this.includeCarbonCB.Size = new System.Drawing.Size(96, 17);
@@ -552,18 +539,6 @@ namespace OrganicChemistryNames
             this.toolTip1.InitialDelay = 100;
             this.toolTip1.ReshowDelay = 110;
             // 
-            // guaranteeCAcidCB
-            // 
-            this.guaranteeCAcidCB.AutoSize = true;
-            this.guaranteeCAcidCB.Checked = true;
-            this.guaranteeCAcidCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.guaranteeCAcidCB.Location = new System.Drawing.Point(3, 320);
-            this.guaranteeCAcidCB.Name = "guaranteeCAcidCB";
-            this.guaranteeCAcidCB.Size = new System.Drawing.Size(102, 17);
-            this.guaranteeCAcidCB.TabIndex = 22;
-            this.guaranteeCAcidCB.Text = "guaranteeCAcid";
-            this.guaranteeCAcidCB.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -615,7 +590,6 @@ namespace OrganicChemistryNames
         private ColorButton emptyCB;
         private ColorButton indexCB;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox includeBondsCB;
         private System.Windows.Forms.CheckBox includeCarbonCB;
         private System.Windows.Forms.CheckBox includeHalogensCB;
         private System.Windows.Forms.NumericUpDown startYNud;

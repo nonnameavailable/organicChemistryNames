@@ -93,7 +93,7 @@ namespace OrganicChemistryNames
         {
             Color.White, // empty
             Color.LightGray, // single bond
-            Color.LightBlue, // double bond
+            Color.Pink, // double bond
             Color.Crimson, // triple bond
             Color.Black, // carbon
             Color.PaleGreen, // chlorine
