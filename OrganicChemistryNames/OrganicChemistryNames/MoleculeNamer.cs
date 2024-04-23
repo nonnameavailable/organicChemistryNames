@@ -172,7 +172,6 @@ namespace OrganicChemistryNames
             int highestSimpleGroup = simpleGroupsList.Max();
             string suffix = Element.simpleSuffixes[highestSimpleGroup - 101];
             int type = Element.simpleTypes[highestSimpleGroup - 101];
-
             if (highestSimpleGroup == Element.CARBOXYLIC_ACID) return new TypedString(Element.counters[simpleGroupsList.Count(n => n == Element.CARBOXYLIC_ACID)] + suffix, type);
 
             extrasPositions.TryGetValue(type, out List<Element> positionss);
@@ -255,7 +254,7 @@ namespace OrganicChemistryNames
 
             lccBonds = NH.longestCCBonds(longestCC, grid);
 
-
+            simpleGroupsList = new List<int>();
             extrasPositions = new Dictionary<int, List<Element>>();
             bondsPositions = new Dictionary<int, List<Element>>();
             for (int i = 0; i < longestCC.Count; i++)

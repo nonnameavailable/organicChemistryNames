@@ -74,6 +74,7 @@
     <Compile Include="ColorButton.Designer.cs">
       <DependentUpon>ColorButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="TrivialNames.cs" />
     <EmbeddedResource Include="ColorButton.resx">
       <DependentUpon>ColorButton.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,6 +92,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -101,6 +103,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\chemusage.csv" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

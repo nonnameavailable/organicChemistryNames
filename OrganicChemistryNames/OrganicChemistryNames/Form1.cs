@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
-
+using System.Reflection;
 namespace OrganicChemistryNames
 {
     public partial class Form1 : Form
@@ -70,7 +70,9 @@ namespace OrganicChemistryNames
                 pmn.setMoleculeName(this);
                 AppendNameRTB(Environment.NewLine);
             }
+            TrivialNames tn = new TrivialNames();
             MoleculeNamer mn = new MoleculeNamer(grid.Grid, 0);
+            StatusLabel.Text = tn.NameAndUsage(mn.MoleculeNameSimpleString);
             mn.setMoleculeName(this);
             mainPictureBox.Image = grid.renderedGrid();
         }
