@@ -25,12 +25,14 @@ namespace OrganicChemistryNames
 
         public int CarbonChainConnection { get => carbonConnection; set => carbonConnection = value; }
         protected bool IsComplex { get => isComplex; set => isComplex = value; }
+        public List<TypedString> SavedTypedStringListName { get; set; }
         public MoleculeNamer(int[][] grid, int depth)
         {
             this.grid = grid;
             this.depth = depth;
             isComplex = false;
             simpleGroupsList = new List<int>();
+            SavedTypedStringListName = MoleculeNameTypedList();
         }
         public MoleculeNamer(int[][] grid, int depth, Element startCarbon, int carbonConnection)
         {
@@ -40,13 +42,14 @@ namespace OrganicChemistryNames
             this.carbonConnection = carbonConnection;
             isComplex = false;
             simpleGroupsList = new List<int>();
+            SavedTypedStringListName = MoleculeNameTypedList();
         }
 
         public void setMoleculeName(Form1 form)
         {
             List<Color> bgColors = form.BgColorList;
             List<Color> fontColors = form.FontColorList;
-            foreach(TypedString ts in MoleculeNameTypedList)
+            foreach(TypedString ts in SavedTypedStringListName)
             {
                 form.AppendNameRTB(ts.Text, new Font("Arial", 24), fontColors[ts.Type], bgColors[ts.Type]);
             }
@@ -57,7 +60,7 @@ namespace OrganicChemistryNames
             get
             {
                 string result = "";
-                foreach (TypedString ts in MoleculeNameTypedList)
+                foreach (TypedString ts in SavedTypedStringListName)
                 {
                     result += ts.Text;
                 }
@@ -65,32 +68,30 @@ namespace OrganicChemistryNames
             }
 
         }
-        public List<TypedString> MoleculeNameTypedList
+        public List<TypedString> MoleculeNameTypedList()
         {
-            get
+            update();
+            List<TypedString> halogens = halogensNamePart();
+            List<TypedString> ylGroups = ylGroupsNamePart();
+            List<TypedString> simplePrefs = simplePrefixes();
+            TypedString stem = new TypedString(Element.carbonStems[longestCC.Count], Element.C);
+            List<TypedString> bonds = bondsNamePart();
+            bool carboxyDeep = depth > 0 && simpleGroupsList.Contains(Element.CARBOXYLIC_ACID);
+            if (carboxyDeep)
             {
-                update();
-                List<TypedString> halogens = halogensNamePart();
-                List<TypedString> ylGroups = ylGroupsNamePart();
-                TypedString stem = new TypedString(Element.carbonStems[longestCC.Count], Element.C);
-                List<TypedString> bonds = bondsNamePart();
-                bool carboxyDeep = depth > 0 && simpleGroupsList.Contains(Element.CARBOXYLIC_ACID);
-                if (carboxyDeep)
-                {
-                    string stemText = longestCC.Count > 1 ? Element.carbonStems[longestCC.Count - 1] : "";
-                    stem = new TypedString(stemText, Element.C);
-                }
-
-                List<TypedString> result = new List<TypedString>();
-                result = result.Concat(halogens).ToList();
-                IP.removeLastHyphen(result);
-                result = result.Concat(simplePrefixes()).ToList();
-                IP.removeLastHyphen(result);
-                result = result.Concat(ylGroups).ToList();
-                result.Add(stem);
-                if(!carboxyDeep || longestCC.Count > 1) result = result.Concat(bonds).ToList();
-                return result;
+                string stemText = longestCC.Count > 1 ? Element.carbonStems[longestCC.Count - 1] : "";
+                stem = new TypedString(stemText, Element.C);
             }
+
+            List<TypedString> result = new List<TypedString>();
+            result = result.Concat(halogens).ToList();
+            if (simplePrefs.Count == 0 && ylGroups.Count == 0) IP.removeLastHyphen(result);
+            result = result.Concat(simplePrefs).ToList();
+            if(ylGroups.Count == 0) IP.removeLastHyphen(result);
+            result = result.Concat(ylGroups).ToList();
+            result.Add(stem);
+            if (!carboxyDeep || longestCC.Count > 1) result = result.Concat(bonds).ToList();
+            return result;
         }
 
         private List<TypedString> ylGroupsNamePart()
@@ -107,7 +108,7 @@ namespace OrganicChemistryNames
                 int cntr = 0;
                 foreach (KeyValuePair<string, List<MoleculeNamer>> kvp in ylGroups)
                 {
-                    List<TypedString> moleculeNameTypedList = kvp.Value[0].MoleculeNameTypedList;
+                    List<TypedString> moleculeNameTypedList = kvp.Value[0].SavedTypedStringListName;
                     string moleculeNameString = kvp.Key;
                     string startHyphen = cntr == 0 ? "" : "-";
                     bool isComplex = kvp.Value[0].IsComplex || int.TryParse(moleculeNameString.Substring(0, 1), out _);
@@ -119,7 +120,7 @@ namespace OrganicChemistryNames
                     string final = startHyphen + positions + "-" + counter + leftPar;
                     
                     result.Add(new TypedString(final, Element.C));
-                    result = result.Concat(kvp.Value[0].MoleculeNameTypedList).ToList();
+                    result = result.Concat(kvp.Value[0].SavedTypedStringListName).ToList();
                     IP.removeLastHyphen(result);
                     result.Add(new TypedString(rightpar, Element.C));
                     cntr++;
