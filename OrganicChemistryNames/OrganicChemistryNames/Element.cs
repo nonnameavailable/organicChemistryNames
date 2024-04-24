@@ -68,7 +68,7 @@ namespace OrganicChemistryNames
         public static int CARBOXYLIC_ACID = 110;
         public static int[] simplePriorityArray = new int[] { THIOL, ALCOHOL, KETONE, ALDEHYDE, NITRILE, AMIDE, ACID_HALIDE, ESTER, SULFONIC_ACID, CARBOXYLIC_ACID };
         public static int[] simpleTypes = new int[] { S, O, O, O, N, N, O, O, S, O };
-        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo", "oxo", "NITRILE", "AMIDE", "ACID_HALIDE", "ESTER", "SULFONIC_ACID", "CARBOXYLIC_ACID" };
+        public static string[] simplePrefixes = new string[] { "sulfanyl", "hydroxy", "oxo", "oxo", "NITRILE", "AMIDE", "ACID_HALIDE", "ESTER", "SULFONIC_ACID", "karboxy" };
         public static string[] simpleSuffixes = new string[] { "thiol", "ol", "on", "al", "NITRILE", "AMIDE", "ACID_HALIDE", "ESTER", "SULFONIC_ACID", "ová kyselina" };
 
         public static string[] characterMap = new string[] { "", "―", "═", "≡", "C", "Cl", "F", "Br", "I", "O", "S" };
@@ -367,6 +367,9 @@ namespace OrganicChemistryNames
             else if (simpleConstant == Element.ALDEHYDE)
             {
                 return isAldehydeOxygen(grid);
+            } else if(simpleConstant == Element.CARBOXYLIC_ACID)
+            {
+                return isCarboxylicOxygen(grid);
             }
             return false;
         }

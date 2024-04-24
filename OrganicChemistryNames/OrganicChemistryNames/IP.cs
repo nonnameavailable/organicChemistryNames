@@ -207,5 +207,24 @@ namespace OrganicChemistryNames
 			}
 			return result.Substring(0, result.Length - separator.Length);
 		}
+		public static string listToString(List<TypedString> list, string separator)
+		{
+			string result = "";
+			foreach (TypedString e in list)
+			{
+				result += e.Text + separator;
+			}
+			return result.Substring(0, result.Length);
+		}
+		public static void removeLastHyphen(List<TypedString> list)
+        {
+			if (list.Count == 0) return;
+			list.RemoveAll(n => n.Text.Equals(""));
+			TypedString lastTs = list.Last();
+            if (lastTs.Text.Last().ToString() == "-")
+            {
+				list[list.Count - 1] = new TypedString(lastTs.Text.Substring(0, lastTs.Text.Length - 1), lastTs.Type);
+			}
+        }
 	}
 }
