@@ -38,9 +38,11 @@ namespace OrganicChemistryNames
             if (keyData == Keys.Delete)
             {
                 grid.clearGrid();
+                repaint();
             } else if (keyData == Keys.P)
             {
                 IsInPracticeMode = !IsInPracticeMode;
+                repaint();
             } else if(keyData == Keys.N)
             {
                 if (IsInPracticeMode)
@@ -48,16 +50,19 @@ namespace OrganicChemistryNames
                     pg.generatePractice();
                     grid.clearGrid();
                 }
+                repaint();
             } else if(keyData == Keys.U)
             {
                 int[][] backup = IP.arrCopy(pg.ChemistryGrid.Grid);
                 pg.ChemistryGrid.Grid = grid.Grid;
                 grid.Grid = backup;
+                repaint();
             } else if(keyData == Keys.H)
             {
                 grid.drawHydrogens = !grid.drawHydrogens;
+                repaint();
             }
-            repaint();
+            
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
